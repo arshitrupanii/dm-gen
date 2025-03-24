@@ -1,127 +1,58 @@
 "use client"
-import React, { useState } from 'react';
-import { User, Building2, Briefcase, GraduationCap } from 'lucide-react';
+import { MessageSquare } from "lucide-react";
+import MessageForm from "../../components/Msgform";
+import OutputPreview from "../../components/output_preview";
 
-function App() {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    jobTitle: '',
-    companyName: '',
-    experienceLevel: 'beginner'
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 px-4 sm:px-6 md:px-8 py-8">
-      <div className="max-w-lg md:max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
-            Professional Profile
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      {/* Header - More compact on mobile */}
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100 mb-6 lg:mb-12">
+        <div className="px-4 py-4 lg:py-6 max-w-7xl mx-auto">
+          <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 text-center tracking-tight">
+            Smart Message Generator
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-            Let's start with your basic information
+          <p className="text-base lg:text-xl text-gray-600 text-center mt-2 max-w-2xl mx-auto">
+            Create personalized professional outreach messages powered by AI
           </p>
         </div>
+      </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 text-gray-800 flex items-center gap-2">
-            <User className="w-6 h-6 text-blue-600" />
-            Basic Information
-          </h2>
-          
-          <div className="space-y-6">
-            {/* Full Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                What's your full name?
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="fullName"
-                  className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  placeholder="John Smith"
-                />
-                <User className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+      {/* Main Content - Stack on mobile, side by side on desktop */}
+      <div className="px-4 lg:px-8 pb-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
+          {/* Form Section - Full width on mobile */}
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="p-4 lg:p-8">
+              <div className="flex items-center gap-2 mb-6">
+                <MessageSquare className="w-6 h-6 text-blue-500 flex-shrink-0" />
+                <h2 className="text-xl lg:text-2xl font-semibold text-gray-800">
+                  Message Details
+                </h2>
               </div>
+              <MessageForm />
             </div>
+          </div>
 
-            {/* Job Title */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                What's your current role?
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="jobTitle"
-                  className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={formData.jobTitle}
-                  onChange={handleInputChange}
-                  placeholder="Full Stack Developer, AI Engineer"
-                />
-                <Briefcase className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              </div>
+          {/* Preview Section - Hidden on initial mobile view */}
+          <div className="lg:block">
+            <div className="sticky top-[120px]">
+              <OutputPreview />
             </div>
-
-            {/* Company Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Which company do you work at? (Optional)
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="companyName"
-                  className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={formData.companyName}
-                  onChange={handleInputChange}
-                  placeholder="Acme Corp"
-                />
-                <Building2 className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              </div>
-            </div>
-
-            {/* Experience Level */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Experience Level
-              </label>
-              <div className="relative">
-                <select
-                  name="experienceLevel"
-                  className="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                  value={formData.experienceLevel}
-                  onChange={handleInputChange}
-                >
-                  <option value="beginner">🟢 Beginner (0-1 year)</option>
-                  <option value="intermediate">🔵 Intermediate (1-3 years)</option>
-                  <option value="experienced">🔴 Experienced (3+ years)</option>
-                </select>
-                <GraduationCap className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              </div>
-            </div>
-
-            {/* Continue Button */}
-            <button
-              className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-3 text-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 duration-150"
-            >
-              Continue
-            </button>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Preview Toggle - Only visible on mobile */}
+      <div className="fixed bottom-4 right-4 lg:hidden">
+        <button
+          type="button"
+          className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+          aria-label="Toggle Preview"
+        >
+          <MessageSquare className="w-6 h-6" />
+        </button>
       </div>
     </div>
   );
 }
-
-export default App;
