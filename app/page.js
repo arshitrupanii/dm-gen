@@ -1,0 +1,58 @@
+"use client"
+import { MessageSquare } from "lucide-react";
+import MessageForm from "./components/form";
+import OutputPreview from "./components/output_preview";
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      {/* Header - More compact on mobile */}
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100 mb-6 lg:mb-12">
+        <div className="px-4 py-4 lg:py-6 max-w-7xl mx-auto">
+          <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 text-center tracking-tight">
+            Smart Message Generator
+          </h1>
+          <p className="text-base lg:text-xl text-gray-600 text-center mt-2 max-w-2xl mx-auto">
+            Create personalized professional outreach messages powered by AI
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content - Stack on mobile, side by side on desktop */}
+      <div className="px-4 lg:px-8 pb-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
+          {/* Form Section - Full width on mobile */}
+          <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="p-4 lg:p-8">
+              <div className="flex items-center gap-2 mb-6">
+                <MessageSquare className="w-6 h-6 text-blue-500 flex-shrink-0" />
+                <h2 className="text-xl lg:text-2xl font-semibold text-gray-800">
+                  Message Details
+                </h2>
+              </div>
+              <MessageForm />
+            </div>
+          </div>
+
+          {/* Preview Section - Hidden on initial mobile view */}
+          <div className="lg:block">
+            <div className="sticky top-[120px]">
+              <OutputPreview />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Preview Toggle - Only visible on mobile */}
+      <div className="fixed bottom-4 right-4 lg:hidden">
+        <button
+          type="button"
+          className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors"
+          aria-label="Toggle Preview"
+        >
+          <MessageSquare className="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Better mobile scrolling */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  select, input, textarea {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Better focus states for mobile */
+@media (max-width: 768px) {
+  input:focus,
+  select:focus,
+  textarea:focus {
+    @apply ring-2 ring-blue-500 ring-offset-2;
+  }
+}
+
+/* Custom dropdown styles */
+select option {
+  padding: 12px;
+  margin: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+select option:hover {
+  background-color: #EBF5FF;
+  color: #2563EB;
+}
+
+select option:checked {
+  background-color: #EBF5FF;
+  color: #2563EB;
+}
+
+/* Mobile-friendly button active states */
+@media (max-width: 768px) {
+  button:active {
+    transform: scale(0.98);
+  }
+}
