@@ -1,6 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { useUser } from "@/app/personal-details/page";
 
 export async function POST(request) {
+  const formData = useUser();
+  console.log(formData);
   try {
     const data = await request.json();
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
