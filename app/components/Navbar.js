@@ -22,7 +22,7 @@ const Navbar = () => {
                 <Sparkles className="h-8 w-8 text-blue-600 transform group-hover:scale-110 transition-transform duration-300" />
                 <div className="absolute -inset-2 bg-blue-100 rounded-full blur opacity-0 group-hover:opacity-50 transition-all duration-300" />
               </div>
-              <span className="ml-3 text-xl font-bold text-blue-600">DM Gen</span>
+              <span className="ml-3 text-xl font-bold text-blue-600">DMGenie</span>
             </Link>
           </div>
           

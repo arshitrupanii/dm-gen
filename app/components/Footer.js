@@ -11,7 +11,7 @@ const Footer = () => {
             <div>
               <div className="flex items-center mb-6 group">
                 <Sparkles className="h-6 w-6 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
-                <span className="ml-2 text-lg font-bold text-blue-600">DM Gen</span>
+                <span className="ml-2 text-lg font-bold text-blue-600">DMGenie </span>
               </div>
               <p className="text-base text-gray-600 mb-6">
                 Revolutionizing message generation with AI-powered solutions for businesses.
@@ -62,7 +62,7 @@ const Footer = () => {
           </div>
           <div className="mt-8 border-t border-gray-100 pt-8">
             <p className="text-base text-gray-600 text-center">
-              © {new Date().getFullYear()} DM Gen. All rights reserved. Built with ❤️ for better communication.
+              © {new Date().getFullYear()} DMGenie . All rights reserved. Built with ❤️ for better communication.
             </p>
           </div>
         </div>
