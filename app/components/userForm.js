@@ -4,52 +4,6 @@ import { useState, useRef } from "react";
 
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [platform, setPlatform] = useState("LinkedIn");
-  const [messageType, setMessageType] = useState("Direct Message");
-  const [tone, setTone] = useState("Professional");
-
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Add refs for the textarea fields
-  const purposeRef = useRef(null);
-  const keyPointsRef = useRef(null);
-  const recipientRef = useRef(null);
-
-  const handleGenerate = async () => {
-    setIsGenerating(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/generate_dm', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          platform: platform,
-          messageType: messageType,
-          tone: tone,
-          purpose: purposeRef.current.value,
-          keyPoints: keyPointsRef.current.value,
-          recipientDetails: recipientRef.current.value,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate message');
-      }
-
-      const data = await response.json();
-      if (onMessageGenerated) {
-        onMessageGenerated(data.message);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   return (
     <div className="relative">

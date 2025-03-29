@@ -19,23 +19,28 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 px-4 sm:px-6 md:px-8 py-8">
-      <div className="max-w-lg md:max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
-            Professional Profile
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100 mb-6 lg:mb-12">
+        <div className="px-4 py-4 lg:py-6 max-w-7xl mx-auto">
+          <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 text-center tracking-tight">
+            Basic Information
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-            Let&apos;s start with your basic information
+          <p className="text-base lg:text-xl text-gray-600 text-center mt-2 max-w-2xl mx-auto">
+            💡 Smart AI for Professional Outreach – Write, Personalize, Connect!
+
+
           </p>
         </div>
+      </div>
 
+      <div className="max-w-lg md:max-w-3xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl">
           <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 text-gray-800 flex items-center gap-2">
             <User className="w-6 h-6 text-blue-600" />
             Basic Information
           </h2>
-          
+
           <div className="space-y-6">
             {/* Full Name */}
             <div>

@@ -1,7 +1,6 @@
 "use client"
 import { MessageSquare } from "lucide-react";
-import MessageForm from "../components/Msgform";
-import Form from "../components/form";
+import MessageForm from "../components/userForm";
 import OutputPreview from "../components/output_preview";
 import { useState } from "react";
 
@@ -23,7 +22,7 @@ export default function Home() {
             Smart Message Generator
           </h1>
           <p className="text-base lg:text-xl text-gray-600 text-center mt-2 max-w-2xl mx-auto">
-            Create personalized professional outreach messages powered by AI
+          🤖✨ Boost Your Outreach with AI-Generated, Personalized Messages!
           </p>
         </div>
       </div>
