@@ -40,8 +40,8 @@ export default function Home() {
                   Message Details
                 </h2>
               </div>
-              {/* <MessageForm /> */}
-              <Form onMessageGenerated={handleMessageGenerated}/>
+              <MessageForm onMessageGenerated={handleMessageGenerated} />
+              {/* <Form onMessageGenerated={handleMessageGenerated}/> */}
             </div>
           </div>
 

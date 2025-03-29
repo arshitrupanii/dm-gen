@@ -1,9 +1,55 @@
 "use client"
 import { Mail, MessageSquare, Twitter, MessageCircle, Send, Building2, User, FileText, ChevronDown, LinkedinIcon, TwitterIcon, Instagram, MessageCircle as WhatsAppIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [platform, setPlatform] = useState("LinkedIn");
+  const [messageType, setMessageType] = useState("Direct Message");
+  const [tone, setTone] = useState("Professional");
+
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Add refs for the textarea fields
+  const purposeRef = useRef(null);
+  const keyPointsRef = useRef(null);
+  const recipientRef = useRef(null);
+
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/generate_dm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          platform: platform,
+          messageType: messageType,
+          tone: tone,
+          purpose: purposeRef.current.value,
+          keyPoints: keyPointsRef.current.value,
+          recipientDetails: recipientRef.current.value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate message');
+      }
+
+      const data = await response.json();
+      if (onMessageGenerated) {
+        onMessageGenerated(data.message);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -42,10 +88,52 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
   );
 }
 
-export default function MessageForm() {
+export default function MessageForm({ onMessageGenerated }) {
   const [platform, setPlatform] = useState("email");
   const [messageType, setMessageType] = useState("cold_outreach");
   const [tone, setTone] = useState("professional");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Add refs for the textarea fields
+  const purposeRef = useRef(null);
+  const keyPointsRef = useRef(null);
+  const recipientRef = useRef(null);
+
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/generate_dm', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          platform,
+          messageType,
+          tone,
+          purpose: purposeRef.current.value,
+          keyPoints: keyPointsRef.current.value,
+          recipientDetails: recipientRef.current.value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate message');
+      }
+
+      const data = await response.json();
+      if (onMessageGenerated) {
+        onMessageGenerated(data.message);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const platformOptions = [
     { value: "email", label: "Email", icon: Mail },
@@ -97,6 +185,7 @@ export default function MessageForm() {
         <label className="block text-sm font-medium text-gray-700 mb-1">Recipient Details</label>
         <div className="relative">
           <input
+            ref={recipientRef}
             type="text"
             placeholder="John Smith - Software Engineer"
             className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -112,6 +201,7 @@ export default function MessageForm() {
         <label className="block text-sm font-medium text-gray-700 mb-1">Message Purpose</label>
         <div className="relative">
           <textarea
+            ref={purposeRef}
             rows={2}
             placeholder="What's the main purpose of your message?"
             className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -137,6 +227,7 @@ export default function MessageForm() {
         <label className="block text-sm font-medium text-gray-700 mb-1">Key Points & CTA</label>
         <div className="relative">
           <textarea
+            ref={keyPointsRef}
             rows={3}
             placeholder="• Main points to include&#10;• Your call-to-action"
             className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -147,13 +238,22 @@ export default function MessageForm() {
         </div>
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="text-red-600 text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Generate Button */}
       <button
         type="button"
-        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-md flex items-center justify-center space-x-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        onClick={handleGenerate}
+        disabled={isGenerating}
+        className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-md flex items-center justify-center space-x-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Send className="h-5 w-5" />
-        <span>Generate AI Message</span>
+        <span>{isGenerating ? 'Generating...' : 'Generate AI Message'}</span>
       </button>
     </div>
   );
