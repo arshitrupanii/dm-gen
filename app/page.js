@@ -3,9 +3,16 @@
 import { MessageSquare, User, Settings, History, BarChart3, Sparkles, Menu, X, Github, Twitter, Linkedin, ArrowRight, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import MessageForm from "./components/form";
+import OutputPreview from "./components/output_preview";
 
 export default function Dashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [generatedMessage, setGeneratedMessage] = useState("");
+
+  const handleMessageGenerated = (message) => {
+    setGeneratedMessage(message);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -237,6 +244,24 @@ export default function Dashboard() {
                   </div>
                   <p className="text-sm text-gray-600 mt-1">Updated tone and style preferences</p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-[1400px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="bg-white p-8 lg:p-10 rounded-lg shadow-lg border border-gray-100">
+              <h2 className="text-2xl font-semibold mb-8 text-gray-800 flex items-center gap-2">
+                <MessageSquare className="w-6 h-6 text-blue-500" />
+                Message Details
+              </h2>
+              <MessageForm onMessageGenerated={handleMessageGenerated} />
+            </div>
+
+            <div className="lg:block">
+              <div className="sticky top-[120px]">
+                <OutputPreview message={generatedMessage} />
               </div>
             </div>
           </div>

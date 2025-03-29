@@ -1,9 +1,19 @@
 "use client"
 import { MessageSquare } from "lucide-react";
-import MessageForm from "../../components/Msgform";
-import OutputPreview from "../../components/output_preview";
+import MessageForm from "../components/Msgform";
+import Form from "../components/form";
+import OutputPreview from "../components/output_preview";
+import { useState } from "react";
 
 export default function Home() {
+
+  const [generatedMessage, setGeneratedMessage] = useState("");
+
+  // This function connects Form to OutputPreview
+  const handleMessageGenerated = (message) => {
+    setGeneratedMessage(message);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       {/* Header - More compact on mobile */}
@@ -30,14 +40,15 @@ export default function Home() {
                   Message Details
                 </h2>
               </div>
-              <MessageForm />
+              {/* <MessageForm /> */}
+              <Form onMessageGenerated={handleMessageGenerated}/>
             </div>
           </div>
 
           {/* Preview Section - Hidden on initial mobile view */}
           <div className="lg:block">
             <div className="sticky top-[120px]">
-              <OutputPreview />
+              <OutputPreview message={generatedMessage} />
             </div>
           </div>
         </div>
