@@ -4,34 +4,13 @@ import { User, Building2, Briefcase, GraduationCap } from 'lucide-react';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation'; // For Next.js 13+ with App Router
+import { useUser } from '../components/UserContext';
 
-const UserContext = createContext();
-
-export const UserProvider = ({ children }) => {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    jobTitle: '',
-    companyName: '',
-    experienceLevel: 'beginner'
-  });
-
-  return (
-    <UserContext.Provider value={{ formData, setFormData }}>
-      {children}
-    </UserContext.Provider>
-  );
-};
-
-export const useUser = () => useContext(UserContext);
 
 function App() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    fullName: '',
-    jobTitle: '',
-    companyName: '',
-    experienceLevel: 'beginner'
-  });
+  const { userData, setUserData } = useUser();
+  const [formData, setFormData] = useState(userData);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,6 +33,8 @@ function App() {
       return;
     }
 
+    // Update context with form data
+    setUserData(formData);
     router.push("/generate-dm");
   };
 
@@ -71,7 +52,7 @@ function App() {
         </div>
       </div>
 
-      <div className="max-w-lg md:max-w-3xl mx-auto">
+      <div className="max-w-lg md:max-w-3xl mx-auto my-10">
         <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl">
           <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 text-gray-800 flex items-center gap-2">
             <User className="w-6 h-6 text-blue-600" />

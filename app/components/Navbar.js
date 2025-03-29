@@ -7,7 +7,6 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const navLinks = [
-    { href: "/generate-dm", label: "Generate", icon: <MessageSquarePlus className="w-5 h-5 mr-2" /> },
     { href: "/personal-details", label: "Profile", icon: <User className="w-5 h-5 mr-2" /> },
     { href: "/settings", label: "Settings", icon: <Settings className="w-5 h-5 mr-2" /> },
   ];
