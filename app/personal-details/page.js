@@ -26,7 +26,7 @@ function App() {
             Professional Profile
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-            Let's start with your basic information
+            Let&apos;s start with your basic information
           </p>
         </div>
 
@@ -40,7 +40,7 @@ function App() {
             {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                What's your full name?
+                What&apos;s your full name?
               </label>
               <div className="relative">
                 <input
@@ -58,7 +58,7 @@ function App() {
             {/* Job Title */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                What's your current role?
+                What&apos;s your current role?
               </label>
               <div className="relative">
                 <input
