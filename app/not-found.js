@@ -15,7 +15,7 @@ export default function ErrorPage() {
       <div className="w-full max-w-md space-y-6">
         <div className="flex justify-center">
           <img
-            src="https://i.postimg.cc/2yrFyxKv/giphy.gif"
+            src="404error.jpg"
             alt="gif_ing"
             className="w-64 h-auto "
           />
@@ -23,7 +23,7 @@ export default function ErrorPage() {
         <div className="text-center mt-6">
           <h1 className="text-3xl font-bold text-gray-800">This page is gone.</h1>
           <p className="text-lg text-gray-600 mt-2 mb-5">
-            ...maybe the page you're looking for is not found or never existed.
+            ...maybe the page you&apos;re looking for is not found or never existed.
           </p>
           <button
             onClick={() => router.push("/personal-details")} // Navigate in the same tab
