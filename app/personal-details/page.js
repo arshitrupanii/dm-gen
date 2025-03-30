@@ -1,10 +1,51 @@
 "use client"
 import React, { useState, createContext, useContext } from 'react';
-import { User, Building2, Briefcase, GraduationCap } from 'lucide-react';
+import { User, Building2, Briefcase, GraduationCap, ChevronDown } from 'lucide-react';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation'; // For Next.js 13+ with App Router
 import { useUser } from '../components/UserContext';
+
+
+function CustomDropdown({ options, value, onChange, icon: Icon }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full pl-9 pr-10 py-2 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-all duration-200"
+      >
+        <span className="absolute left-2 top-2.5 text-gray-400">
+          <Icon className="h-5 w-5" />
+        </span>
+        <span>{options.find(opt => opt.value === value)?.label}</span>
+        <span className={`absolute right-2 top-2.5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+          <ChevronDown className="h-5 w-5" />
+        </span>
+      </button>
+
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-1 max-h-60 overflow-auto">
+          {options.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+              className={`w-full px-3 py-2 text-left flex items-center space-x-3 hover:bg-blue-50 transition-colors ${value === option.value ? 'bg-blue-50 text-blue-600' : ''}`}
+            >
+              <option.icon className="h-5 w-5" />
+              <span>{option.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 
 function App() {
@@ -12,11 +53,24 @@ function App() {
   const { userData, setUserData } = useUser();
   const [formData, setFormData] = useState(userData);
 
+  const experienceOptions = [
+    { value: "beginner", label: "🟢 Beginner (0-1 year)", icon: GraduationCap },
+    { value: "intermediate", label: "🔵 Intermediate (1-3 years)", icon: GraduationCap },
+    { value: "experienced", label: "🔴 Experienced (3+ years)", icon: GraduationCap },
+  ];
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleDropdownChange = (value) => {
+    setFormData(prev => ({
+      ...prev,
+      experienceLevel: value
     }));
   };
 
@@ -122,17 +176,12 @@ function App() {
                   Experience Level
                 </label>
                 <div className="relative">
-                  <select
-                    name="experienceLevel"
-                    className="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                    value={formData.experienceLevel}
-                    onChange={handleInputChange}
-                  >
-                    <option value="beginner">🟢 Beginner (0-1 year)</option>
-                    <option value="intermediate">🔵 Intermediate (1-3 years)</option>
-                    <option value="experienced">🔴 Experienced (3+ years)</option>
-                  </select>
-                  <GraduationCap className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <CustomDropdown
+                  options={experienceOptions}
+                  value={formData.experienceLevel}
+                  onChange={handleDropdownChange}
+                  icon={GraduationCap}
+                />
                 </div>
               </div>
 
