@@ -25,7 +25,7 @@ export default function ErrorPage() {
       {/* Message Section */}
       <div className="text-center mt-8">
         <h2 className="text-3xl font-semibold text-gray-800 mb-3">
-          Looks like you're lost
+          Looks like you&apos;re lost
         </h2>
         <p className="text-gray-600 text-lg mb-6">
           The page you are looking for is not available!
