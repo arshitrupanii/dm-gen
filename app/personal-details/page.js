@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation'; // For Next.js 13+ with App Router
 import { useUser } from '../components/UserContext';
+import Navbar from '../components/Navbar';
 
 
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
@@ -94,6 +95,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+      <Navbar/>
 
       <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100 mb-6 lg:mb-12">
         <div className="px-4 py-4 lg:py-6 max-w-7xl mx-auto">

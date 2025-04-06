@@ -1,37 +1,42 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation"; // For handling navigation in Next.js
+import { useRouter } from "next/navigation";
 
 export default function ErrorPage() {
-  const router = useRouter(); // Next.js router hook
+  const router = useRouter();
 
   useEffect(() => {
-    document.title = "Error Page";
+    document.title = "404 - Page Not Found";
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <div className="w-full max-w-md space-y-6">
-        <div className="flex justify-center">
-          <img
-            src="404error.jpg"
-            alt="gif_ing"
-            className="w-64 h-auto "
-          />
-        </div>
-        <div className="text-center mt-6">
-          <h1 className="text-3xl font-bold text-gray-800">This page is gone.</h1>
-          <p className="text-lg text-gray-600 mt-2 mb-5">
-            ...maybe the page you&apos;re looking for is not found or never existed.
-          </p>
-          <button
-            onClick={() => router.push("/personal-details")} // Navigate in the same tab
-            className="cursor-pointer px-6 py-3 rounded-lg bg-blue-600 text-white text-lg font-medium hover:bg-blue-700 transition"
-          >
-            Back to home
-          </button>
-        </div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6 font-serif">
+      {/* Background GIF Section */}
+      <div
+        className="w-full max-w-2xl h-96 bg-center bg-cover rounded-xl shadow-md"
+        style={{
+          backgroundImage:
+            "url('https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif')",
+        }}
+      >
+      </div>
+
+      {/* Message Section */}
+      <div className="text-center mt-8">
+        <h2 className="text-3xl font-semibold text-gray-800 mb-3">
+          Looks like you're lost
+        </h2>
+        <p className="text-gray-600 text-lg mb-6">
+          The page you are looking for is not available!
+        </p>
+
+        <button
+          onClick={() => router.push("/personal-details")}
+          className="px-6 py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition"
+        >
+          Go to Home
+        </button>
       </div>
     </div>
   );
