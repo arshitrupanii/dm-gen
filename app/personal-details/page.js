@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation'; // For Next.js 13+ with App Router
 import { useUser } from '../components/UserContext';
 import Navbar from '../components/Navbar';
-
+import Footer from '../components/Footer';
 
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -198,6 +198,7 @@ function App() {
         </div>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />
+      <Footer/>
     </div>
 
   );

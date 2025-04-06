@@ -33,7 +33,7 @@ export default function ErrorPage() {
 
         <button
           onClick={() => router.push("/personal-details")}
-          className="px-6 py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition"
+          className="px-6 py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition cursor-pointer"
         >
           Go to Home
         </button>
