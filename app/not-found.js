@@ -11,10 +11,10 @@ export default function ErrorPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6 font-serif">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6 font-medium">
       {/* Background GIF Section */}
       <div
-        className="w-full max-w-2xl h-96 bg-center bg-cover rounded-xl shadow-md"
+        className="w-full max-w-2xl h-96 bg-center bg-cover rounded-xl "
         style={{
           backgroundImage:
             "url('https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif')",

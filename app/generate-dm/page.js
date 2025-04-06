@@ -1,6 +1,6 @@
 "use client"
 import { MessageSquare } from "lucide-react";
-import MessageForm from "../components/userForm";
+import MessageForm from "../components/userInput";
 import OutputPreview from "../components/output_preview";
 import { useState } from "react";
 import Navbar from "../components/Navbar";
