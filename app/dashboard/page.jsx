@@ -97,9 +97,7 @@ function Dashboard() {
 
       <main>
         {/* Hero Section */}
-        {/* <HeroSection /> */}
-
-<div className="bg-white text-gray-600">
+        <div className="bg-white text-gray-600">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
             <div className="text-center">
               <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl md:text-7xl lg:text-7xl leading-tight">
@@ -110,7 +108,7 @@ function Dashboard() {
               </p>
               <div className="mt-6 sm:mt-8 flex justify-center">
                 <a
-                  href="#pricing"
+                  href="/personal-details"
                   className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-700 rounded-md shadow hover:bg-blue-800 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg md:px-12 md:py-5 md:text-xl"
                 >
                   Get Started
@@ -247,8 +245,8 @@ function Dashboard() {
                 <div
                   key={plan.name}
                   className={`relative p-8 bg-white rounded-2xl ${plan.popular
-                      ? 'ring-2 ring-blue-500 shadow-xl'
-                      : 'border border-gray-200'
+                    ? 'ring-2 ring-blue-500 shadow-xl'
+                    : 'border border-gray-200'
                     }`}
                 >
                   {plan.popular && (
@@ -275,8 +273,8 @@ function Dashboard() {
                   <div className="mt-8">
                     <button
                       className={`w-full py-3 px-4 rounded-lg font-semibold ${plan.popular
-                          ? 'bg-blue-500 text-white hover:bg-blue-600'
-                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                        ? 'bg-blue-500 text-white hover:bg-blue-600'
+                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                         }`}
                     >
                       Get started
