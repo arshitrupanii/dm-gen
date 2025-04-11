@@ -11,12 +11,12 @@ const Navbar = () => {
   const navLinks = [
     { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5 mr-2" /> },
     { href: "/personal-details", label: "Profile", icon: <User className="w-5 h-5 mr-2" /> },
-    { href: "#pricing", label: "Pricing", icon: <MdAttachMoney className="w-5 h-5 mr-2" /> },
+    { href: "/dashboard/#pricing", label: "Pricing", icon: <MdAttachMoney className="w-5 h-5 mr-2" /> },
     { href: "/settings", label: "Settings", icon: <Settings className="w-5 h-5 mr-2" /> },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+    <nav className="sticky top-0 z-50 w-full backdrop-blur-sm border-b border-gray-100 shadow-sm bg-white" >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
