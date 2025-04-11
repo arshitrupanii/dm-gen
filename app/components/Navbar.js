@@ -1,7 +1,7 @@
 "use client"
-import React, { useState } from 'react'
+import React, { Profiler, useState } from 'react'
 import Link from 'next/link';
-import { Sparkles, Menu, X, Settings, User, LayoutDashboard,  } from 'lucide-react';
+import { Sparkles, Menu, X, Settings, User, LayoutDashboard } from 'lucide-react';
 import { MdAttachMoney } from "react-icons/md";
 
 
@@ -9,10 +9,8 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const navLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5 mr-2" /> },
+    // { href: "/dashboard/#pricing", label: "Pricing", icon: <MdAttachMoney className="w-5 h-5 mr-2" /> },
     { href: "/personal-details", label: "Profile", icon: <User className="w-5 h-5 mr-2" /> },
-    { href: "#pricing", label: "Pricing", icon: <MdAttachMoney className="w-5 h-5 mr-2" /> },
-    { href: "/settings", label: "Settings", icon: <Settings className="w-5 h-5 mr-2" /> },
   ];
 
   return (
