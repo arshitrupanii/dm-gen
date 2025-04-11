@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/react"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "DMGenie - AI-Powered Message Generation",
+  title: "DmGenie - AI-Powered Message Generation",
   description: "Generate personalized messages effortlessly with DMGenie. Leverage AI to craft messages for LinkedIn, Twitter, WhatsApp, Instagram, and Email.",
 };
 
