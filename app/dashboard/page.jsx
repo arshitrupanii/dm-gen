@@ -2,6 +2,7 @@ import React from 'react';
 import { MessageSquare, Send, Star, Linkedin, Twitter, Check } from 'lucide-react';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import HeroSection from './heroSection';
 
 const stats = [
   { name: 'Response Rate', value: '85%', description: 'Average response rate across platforms' },
