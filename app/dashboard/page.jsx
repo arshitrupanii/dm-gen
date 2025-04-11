@@ -2,7 +2,7 @@ import React from 'react';
 import { MessageSquare, Send, Star, Linkedin, Twitter, Check } from 'lucide-react';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import HeroSection from './Herosection';
+import HeroSection from './HeroSection';
 
 const stats = [
   { name: 'Response Rate', value: '85%', description: 'Average response rate across platforms' },
@@ -97,7 +97,9 @@ function Dashboard() {
 
       <main>
         {/* Hero Section */}
+
         <HeroSection/>
+
         {/* <div className="bg-white text-gray-600">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
             <div className="text-center">
