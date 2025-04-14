@@ -7,7 +7,7 @@ export default function TermsAndConditions() {
       <h1 className="text-4xl font-bold mb-4">Terms and Conditions</h1>
       <p className="text-lg mb-4">Last updated: [Insert Date]</p>
       <p className="mb-4">
-        These Terms and Conditions outline the rules and regulations for the use of DMGenie's website and services.
+        These Terms and Conditions outline the rules and regulations for the use of DMGenie&apos;s website and services.
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">Acceptance of Terms</h2>
@@ -22,7 +22,7 @@ export default function TermsAndConditions() {
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">User Responsibilities</h2>
       <p className="mb-4">
-        You agree to use our services only for lawful purposes and in a manner that does not infringe the rights of, restrict, or inhibit anyone else's use of the services.
+        You agree to use our services only for lawful purposes and in a manner that does not infringe the rights of, restrict, or inhibit anyone else&apos;s use of the services.
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">Limitation of Liability</h2>

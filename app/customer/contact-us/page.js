@@ -5,7 +5,7 @@ export default function ContactUs() {
     <div className="max-w-4xl mx-auto p-6">
       <Navbar />
       <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-      <p className="text-lg mb-4">We'd love to hear from you!</p>
+      <p className="text-lg mb-4">We&apos;d love to hear from you!</p>
       <p className="mb-4">
         If you have any questions, concerns, or feedback, please feel free to reach out to us using the contact information below.
       </p>
