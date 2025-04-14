@@ -7,7 +7,7 @@ export default function CancellationAndRefund() {
       <h1 className="text-4xl font-bold mb-4">Cancellation and Refund Policy</h1>
       <p className="text-lg mb-4">Last updated: [Insert Date]</p>
       <p className="mb-4">
-        This Cancellation and Refund Policy outlines the terms under which customers can cancel their orders and request refunds for purchases made through DMGenie (the "Site").
+        This Cancellation and Refund Policy outlines the terms under which customers can cancel their orders and request refunds for purchases made through DMGenie (the &apos;Site&apos;).
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">Cancellation Policy</h2>

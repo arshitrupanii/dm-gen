@@ -7,7 +7,7 @@ export default function ShippingAndDelivery() {
       <h1 className="text-4xl font-bold mb-4">Shipping and Delivery Policy</h1>
       <p className="text-lg mb-4">Last updated: [Insert Date]</p>
       <p className="mb-4">
-        This Shipping and Delivery Policy outlines the terms under which we ship products purchased through DMGenie (the "Site").
+        This Shipping and Delivery Policy outlines the terms under which we ship products purchased through DMGenie (the &apos;Site&apos;).
       </p>
 
       <h2 className="text-2xl font-semibold mt-6 mb-2">Shipping Methods</h2>
