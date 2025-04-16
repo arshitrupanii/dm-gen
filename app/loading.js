@@ -12,7 +12,7 @@ export default function Loading() {
         if (prev >= 100) return 100;
         return prev + Math.floor(Math.random() * 15) + 5;
       });
-    }, 200);
+    }, 20000);
     
     return () => clearTimeout(timer);
   }, [progress]);

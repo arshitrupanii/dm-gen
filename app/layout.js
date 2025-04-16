@@ -1,7 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { UserProvider } from './components/UserContext';
+import { UserProvider } from './personal-details/UserContext';
 import { Analytics } from "@vercel/analytics/react"
+import { ClerkProvider } from "@clerk/nextjs";
+import dbConnect from "../lib/db";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,14 +13,17 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  dbConnect();
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <UserProvider>
-          {children}
-        </UserProvider>
-      </body>
-          <Analytics/>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <UserProvider>
+            {children}
+          </UserProvider>
+        </body>
+        <Analytics />
+      </html>
+    </ClerkProvider>
   );
 }

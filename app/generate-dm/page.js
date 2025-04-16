@@ -1,7 +1,7 @@
 "use client"
 import { MessageSquare } from "lucide-react";
-import MessageForm from "../components/userInput";
-import OutputPreview from "../components/output_preview";
+import MessageForm from "./userInputForm";
+import OutputPreview from "./output_preview";
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -19,7 +19,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       <Navbar/>
       {/* Header - More compact on mobile */}
-      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100 mb-6 lg:mb-12">
+      <div className="sticky top-16 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100 mb-6 lg:mb-12">
         <div className="px-4 py-4 lg:py-6 max-w-7xl mx-auto">
           <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 text-center tracking-tight">
             Smart Message Generator

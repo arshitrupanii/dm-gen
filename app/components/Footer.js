@@ -61,6 +61,16 @@ const Footer = () => {
             </div>
           </div>
           <div className="mt-8 border-t border-gray-100 pt-8">
+            <h3 className="text-sm font-semibold text-gray-700 tracking-wider uppercase mb-4">Legal</h3>
+            <ul className="space-y-4">
+              <li><Link href="/privacy-policy" className="text-base text-gray-600 hover:text-blue-700 transition-all duration-300 hover:translate-x-1 inline-flex font-medium">Privacy Policy</Link></li>
+              <li><Link href="/terms-and-conditions" className="text-base text-gray-600 hover:text-blue-700 transition-all duration-300 hover:translate-x-1 inline-flex font-medium">Terms and Conditions</Link></li>
+              <li><Link href="/cancellation-and-refund" className="text-base text-gray-600 hover:text-blue-700 transition-all duration-300 hover:translate-x-1 inline-flex font-medium">Cancellation and Refund</Link></li>
+              <li><Link href="/shipping-and-delivery" className="text-base text-gray-600 hover:text-blue-700 transition-all duration-300 hover:translate-x-1 inline-flex font-medium">Shipping and Delivery</Link></li>
+              <li><Link href="/contact-us" className="text-base text-gray-600 hover:text-blue-700 transition-all duration-300 hover:translate-x-1 inline-flex font-medium">Contact Us</Link></li>
+            </ul>
+          </div>
+          <div className="mt-8 border-t border-gray-100 pt-8">
             <p className="text-base text-gray-600 text-center">
               © {new Date().getFullYear()} DMGenie . All rights reserved. Built with ❤️ for better communication.
             </p>
