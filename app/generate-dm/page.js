@@ -9,6 +9,7 @@ import Footer from "../components/Footer";
 export default function Home() {
 
   const [generatedMessage, setGeneratedMessage] = useState("");
+  const [recentMessages, setRecentMessages] = useState([]);
 
   // This function connects Form to OutputPreview
   const handleMessageGenerated = (message) => {
@@ -42,7 +43,7 @@ export default function Home() {
                   Message Details
                 </h2>
               </div>
-              <MessageForm onMessageGenerated={handleMessageGenerated} />
+              <MessageForm onMessageGenerated={handleMessageGenerated} setRecentMessages={setRecentMessages} />
               {/* <Form onMessageGenerated={handleMessageGenerated}/> */}
             </div>
           </div>
@@ -50,7 +51,7 @@ export default function Home() {
           {/* Preview Section - Hidden on initial mobile view */}
           <div className="lg:block">
             <div className="sticky top-[120px]">
-              <OutputPreview message={generatedMessage} />
+              <OutputPreview message={generatedMessage} recentMessages={recentMessages} />
             </div>
           </div>
         </div>

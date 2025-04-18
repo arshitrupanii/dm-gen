@@ -45,7 +45,7 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
   );
 }
 
-export default function MessageForm({ onMessageGenerated }) {
+export default function MessageForm({ onMessageGenerated, setRecentMessages }) {
   const { userData } = useUser();
   const [platform, setPlatform] = useState("email");
   const [messageType, setMessageType] = useState("cold_outreach");
@@ -103,6 +103,7 @@ export default function MessageForm({ onMessageGenerated }) {
       const data = await response.json();
       if (onMessageGenerated) {
         onMessageGenerated(data.message);
+        setRecentMessages(prev => [data.message, ...prev.slice(0, 4)]);
       }
     } catch (err) {
       setError(err.message);

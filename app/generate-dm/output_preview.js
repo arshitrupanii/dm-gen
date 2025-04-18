@@ -2,14 +2,14 @@
 import { MessageSquare, Copy } from "lucide-react";
 import { useState } from "react";
 
-export default function OutputPreview({ message }) {
-  const [copied, setCopied] = useState(false);
+export default function OutputPreview({ message, recentMessages }) {
+  const [copied, setCopied] = useState(null);
 
-  const handleCopy = async () => {
+  const handleCopy = async (msg) => {
     try {
-      await navigator.clipboard.writeText(message);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(msg);
+      setCopied(msg);
+      setTimeout(() => setCopied(null), 2000);
     } catch (err) {
       console.error("Failed to copy:", err);
     }
@@ -34,11 +34,11 @@ export default function OutputPreview({ message }) {
         </h2>
         {message && (
           <button
-            onClick={handleCopy}
+            onClick={() => handleCopy(message)}
             className={`p-2 text-gray-500 hover:text-blue-500 transition-colors ${
-              copied ? "text-green-500" : ""
+              copied === message ? "text-green-500" : ""
             }`}
-            title={copied ? "Copied!" : "Copy to clipboard"}
+            title={copied === message ? "Copied!" : "Copy to clipboard"}
           >
             <Copy className="w-5 h-5 cursor-pointer" />
           </button>
@@ -62,6 +62,27 @@ export default function OutputPreview({ message }) {
             <p className="text-lg">Your generated message will appear here...</p>
           </div>
         )}
+      </div>
+
+      {/* Recent Messages Section */}
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold text-gray-800">Recent Messages</h3>
+        <div className="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {recentMessages.map((msg, index) => (
+            <div key={index} className="p-4 border rounded-md bg-gray-100 flex flex-col justify-between">
+              <div className="whitespace-pre-wrap overflow-hidden overflow-ellipsis max-h-24">
+                {msg}
+              </div>
+              <button
+                onClick={() => handleCopy(msg)}
+                className={`mt-2 p-2 text-gray-500 hover:text-blue-500 transition-colors ${copied === msg ? "text-green-500" : ""}`}
+                title={copied === msg ? "Copied!" : "Copy to clipboard"}
+              >
+                <Copy className="w-5 h-5 cursor-pointer" />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
