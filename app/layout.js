@@ -3,7 +3,7 @@ import "./globals.css";
 import { UserProvider } from './personal-details/UserContext';
 import { Analytics } from "@vercel/analytics/react"
 import { ClerkProvider } from "@clerk/nextjs";
-// import dbConnect from "../lib/db";
+import dbConnect from "../lib/db";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,9 +13,9 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  // dbConnect();
+  dbConnect();
   return (
-    <ClerkProvider>
+    // <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
           <UserProvider>
@@ -24,6 +24,6 @@ export default function RootLayout({ children }) {
         </body>
         <Analytics />
       </html>
-    </ClerkProvider>
+    //</ClerkProvider>
   );
 }

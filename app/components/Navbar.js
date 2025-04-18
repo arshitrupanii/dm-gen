@@ -1,11 +1,10 @@
 "use client"
 import React, { Profiler, useState } from 'react'
 import Link from 'next/link';
-import { Sparkles, Menu, X, Settings, User, LayoutDashboard, LogIn } from 'lucide-react';
+import { Sparkles, Menu, X, LogInIcon, User, LayoutDashboard, LogIn } from 'lucide-react';
 import { MdAttachMoney } from "react-icons/md";
 import {
   ClerkProvider,
-  SignInButton,
   SignUpButton,
   SignedIn,
   SignedOut,
@@ -19,7 +18,7 @@ const Navbar = () => {
     // { href: "/dashboard/#pricing", label: "Pricing", icon: <MdAttachMoney className="w-5 h-5 mr-2" /> },
     { href: "/personal-details", label: "Profile", icon: <User className="w-5 h-5 mr-2" /> },
     // { href: "#pricing", label: "Pricing", icon: <MdAttachMoney className="w-5 h-5 mr-2" /> },
-    // { href: "/settings", label: "Settings", icon: <Settings className="w-5 h-5 mr-2" /> },
+    { href: "/signup", label: "sign up", icon: <LogInIcon className="w-5 h-5 mr-2" /> },
   ];
 
 
@@ -52,16 +51,16 @@ const Navbar = () => {
               </Link>
             ))}
             {/* sign up btn */}
-            <SignedOut>
+            {/* <SignedOut>
               <div className="flex justify-center items-center cursor-pointer px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium group">
                 <LogIn className="w-5 h-5 mr-2" />
                 <SignInButton className="cursor-pointer" />
               </div>
-            </SignedOut>
+            </SignedOut> */}
             {/* user button  */}
-            <SignedIn>
+            {/* <SignedIn>
               <UserButton />
-            </SignedIn>
+            </SignedIn> */}
           </div>
 
           {/* Mobile menu button */}
@@ -75,16 +74,16 @@ const Navbar = () => {
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               
             </button>
-            <SignedOut>
+            {/* <SignedOut>
                 <div className="flex justify-center items-center cursor-pointer px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium group">
                   <LogIn className="w-5 h-5 mr-2" />
                   <SignInButton className="cursor-pointer" />
                 </div>
-              </SignedOut>
+              </SignedOut> */}
               {/* user button  */}
-              <SignedIn>
+              {/* <SignedIn>
                 <UserButton />
-              </SignedIn>   
+              </SignedIn>    */}
           </div>
         </div>
       </div>
