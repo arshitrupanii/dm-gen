@@ -4,9 +4,9 @@ import { User, Building2, Briefcase, GraduationCap, ChevronDown } from 'lucide-r
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation'; // For Next.js 13+ with App Router
-import { useUser } from './UserContext';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { supabase } from '../../lib/supabase'; // Adjust path accordingly
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,8 +51,12 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
 
 function App() {
   const router = useRouter();
-  const { userData, setUserData } = useUser();
-  const [formData, setFormData] = useState(userData);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    jobTitle: '',
+    experienceLevel: '',
+    companyName: ''
+  });
 
   const experienceOptions = [
     { value: "beginner", label: "🟢 Beginner (0-1 year)", icon: GraduationCap },
@@ -75,7 +79,7 @@ function App() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     // Validation
@@ -88,14 +92,25 @@ function App() {
       return;
     }
 
+
     // Update context with form data
-    setUserData(formData);
-    router.push("/generate-dm");
+    const { data, error } = await supabase
+      .from('user_details') // Your table name
+      .insert([{fullName : "arsht", jobTitle : "developer", experienceLevel : "beginner", companyName : "acme"}]);
+
+    if (error) {
+      toast.error("Failed to save. " + error);
+    } else {
+      toast.success("Data saved!");
+      // router.push("/generate-dm");
+    }
+
+    // router.push("/generate-dm");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-      <Navbar/>
+      <Navbar />
 
       <div className="sticky top-16 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100 mb-6 lg:mb-12">
         <div className="px-4 py-4 lg:py-6 max-w-7xl mx-auto">
@@ -115,7 +130,7 @@ function App() {
             Basic Information
           </h2>
 
-          <form action=""  onSubmit={handleSubmit}>
+          <form action="" onSubmit={handleSubmit}>
             <div className="space-y-6">
               {/* Full Name */}
               <div>
@@ -124,7 +139,7 @@ function App() {
                 </label>
                 <div className="relative">
                   <input
-                    area-required ="true"
+                    area-required="true"
                     type="text"
                     name="fullName"
                     className="w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -178,12 +193,12 @@ function App() {
                   Experience Level
                 </label>
                 <div className="relative">
-                <CustomDropdown
-                  options={experienceOptions}
-                  value={formData.experienceLevel}
-                  onChange={handleDropdownChange}
-                  icon={GraduationCap}
-                />
+                  <CustomDropdown
+                    options={experienceOptions}
+                    value={formData.experienceLevel}
+                    onChange={handleDropdownChange}
+                    icon={GraduationCap}
+                  />
                 </div>
               </div>
 
@@ -198,7 +213,7 @@ function App() {
         </div>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />
-      <Footer/>
+      <Footer />
     </div>
 
   );

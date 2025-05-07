@@ -1,8 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { UserProvider } from './personal-details/UserContext';
 import { Analytics } from "@vercel/analytics/react"
-// import { ClerkProvider } from "@clerk/nextjs";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,15 +12,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    // <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-          <UserProvider>
             {children}
-          </UserProvider>
         </body>
         <Analytics />
       </html>
-    //</ClerkProvider>
+
   );
 }

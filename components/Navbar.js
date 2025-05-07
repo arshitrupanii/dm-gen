@@ -2,14 +2,6 @@
 import React, { Profiler, useState } from 'react'
 import Link from 'next/link';
 import { Sparkles, Menu, X, LogInIcon, User, LayoutDashboard, LogIn } from 'lucide-react';
-import { MdAttachMoney } from "react-icons/md";
-import {
-  ClerkProvider,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/nextjs'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -72,18 +64,9 @@ const Navbar = () => {
               aria-label="Toggle navigation menu"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              
+
             </button>
-            {/* <SignedOut>
-                <div className="flex justify-center items-center cursor-pointer px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium group">
-                  <LogIn className="w-5 h-5 mr-2" />
-                  <SignInButton className="cursor-pointer" />
-                </div>
-              </SignedOut> */}
-              {/* user button  */}
-              {/* <SignedIn>
-                <UserButton />
-              </SignedIn>    */}
+
           </div>
         </div>
       </div>

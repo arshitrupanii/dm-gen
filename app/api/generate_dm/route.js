@@ -45,8 +45,6 @@ Write a ${data.tone} message (100–200 words depending on the platform) that is
 Return only the final message. It should feel like it was written by a thoughtful human with real intent, not a machine.
 `;
 
-
-
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
