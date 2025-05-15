@@ -1,12 +1,12 @@
 "use client"
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState } from 'react';
 import { User, Building2, Briefcase, GraduationCap, ChevronDown } from 'lucide-react';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation'; // For Next.js 13+ with App Router
-import { supabase } from '../../lib/supabase'; // Adjust path accordingly
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { useUser } from '../contexts/UserContext';
 
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,20 +48,15 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
   );
 }
 
-
 function App() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    fullName: '',
-    jobTitle: '',
-    experienceLevel: '',
-    companyName: ''
-  });
+  const { userData, updateUserData } = useUser();
+  const [formData, setFormData] = useState(userData);
 
   const experienceOptions = [
-    { value: "beginner", label: "🟢 Beginner (0-1 year)", icon: GraduationCap },
-    { value: "intermediate", label: "🔵 Intermediate (1-3 years)", icon: GraduationCap },
-    { value: "experienced", label: "🔴 Experienced (3+ years)", icon: GraduationCap },
+    { value: "beginner", label: "👦 Beginner (0-1 year)", icon: GraduationCap },
+    { value: "intermediate", label: "👨🏻‍💻 Intermediate (1-3 years)", icon: GraduationCap },
+    { value: "experienced", label: "👩🏻‍💼 Experienced (3+ years)", icon: GraduationCap },
   ];
 
   const handleInputChange = (e) => {
@@ -92,20 +87,9 @@ function App() {
       return;
     }
 
-
-    // Update context with form data
-    const { data, error } = await supabase
-      .from('user_details') // Your table name
-      .insert([{fullName : "arsht", jobTitle : "developer", experienceLevel : "beginner", companyName : "acme"}]);
-
-    if (error) {
-      toast.error("Failed to save. " + error);
-    } else {
-      toast.success("Data saved!");
-      // router.push("/generate-dm");
-    }
-
-    // router.push("/generate-dm");
+    // Update the global user context
+    updateUserData(formData);
+    router.push("/generate-dm");
   };
 
   return (
@@ -215,7 +199,6 @@ function App() {
       <ToastContainer position="top-right" autoClose={3000} />
       <Footer />
     </div>
-
   );
 }
 

@@ -3,7 +3,7 @@ import { Mail, MessageSquare, Twitter, MessageCircle, Send, Building2, User, Fil
 import { useState, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import { useUser } from '../personal-details/UserContext';
+import { useUser } from '../contexts/UserContext';
 
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);

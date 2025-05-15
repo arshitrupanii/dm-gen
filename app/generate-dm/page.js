@@ -3,8 +3,8 @@ import { MessageSquare } from "lucide-react";
 import MessageForm from "./userInputForm";
 import OutputPreview from "./output_preview";
 import { useState } from "react";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Home() {
 
