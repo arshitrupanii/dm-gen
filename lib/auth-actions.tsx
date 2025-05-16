@@ -3,41 +3,39 @@
 import { redirect } from "next/navigation";
 import { createClient } from "utils/supabase/server";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"; // fallback for dev
 
 export async function signout() {
   const supabase = await createClient();
+
   const { error } = await supabase.auth.signOut();
+
   if (error) {
-    console.log(error);
+    console.error("Sign-out error:", error);
     redirect("/error");
   }
 
-  redirect("/dashboard");
+  redirect("/"); // or "/dashboard" depending on your UX
 }
 
 export async function signInWithGoogle() {
   const supabase = await createClient();
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
       queryParams: {
         access_type: "offline",
         prompt: "consent",
-          redirectTo: 'https://dmgenie.vercel.app/dashboard' // ✅ CORRECT
       },
+      redirectTo: `${SITE_URL}/auth/callback`, // ✅ Use a centralized callback handler
     },
   });
-  console.log(data)
-
-  if(error?.status === 400) {
-    console.log(error, "error in signInWithGoogle");
-    redirect("/error");
-  }
 
   if (error) {
-    // console.log(error, "error logfjkflds"); 
+    console.error("Google Sign-In Error:", error);
     redirect("/error");
   }
-  redirect(data.url);
-  
+
+  redirect(data.url); // Redirect to Supabase auth URL
 }
