@@ -26,11 +26,12 @@ export async function signInWithGoogle() {
       },
     },
   });
+  console.log(data)
 
   if(error?.status === 400) {
-    console.log(error, "error logfjkflds");
+    console.log(error, "error in signInWithGoogle");
     redirect("/error");
-  }  
+  }
 
   if (error) {
     // console.log(error, "error logfjkflds"); 

@@ -66,7 +66,10 @@ const Generate = ({ handleMessageGenerated, generatedMessage }) => {
 }
 
 export default function Home() {
-  const { user, isLoading } = useUser();
+
+  const { userData, updateUserData, user, isLoading } = useUser();
+  console.log(userData)
+
   const router = useRouter();
   const [generatedMessage, setGeneratedMessage] = useState("");
 
