@@ -28,7 +28,7 @@ export async function signInWithGoogle() {
         access_type: "offline",
         prompt: "consent",
       },
-      redirectTo: `${SITE_URL}/auth/callback`, // ✅ Use a centralized callback handler
+ // ✅ Use a centralized callback handler
     },
   });
 
