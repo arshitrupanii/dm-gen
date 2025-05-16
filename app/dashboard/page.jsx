@@ -96,7 +96,7 @@ function Dashboard() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 dark:to-gray-800">
       {/* Header */}
       <Navbar />
 
@@ -105,14 +105,14 @@ function Dashboard() {
         <HeroSection />
 
         {/* Stats Section */}
-        <div className="bg-gray-50 py-16">
+        <div className="bg-gray-50 dark:bg-gray-800/50 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <dl className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat) => (
-                <div key={stat.name} className="px-6 py-8 bg-white shadow-lg rounded-lg overflow-hidden sm:p-8">
-                  <dt className="text-sm font-medium text-gray-500 truncate">{stat.name}</dt>
-                  <dd className="mt-1 text-3xl font-semibold text-gray-900">{stat.value}</dd>
-                  <p className="mt-2 text-sm text-gray-600">{stat.description}</p>
+                <div key={stat.name} className="px-6 py-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden sm:p-8">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{stat.name}</dt>
+                  <dd className="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">{stat.value}</dd>
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{stat.description}</p>
                 </div>
               ))}
             </dl>
@@ -120,22 +120,22 @@ function Dashboard() {
         </div>
 
         {/* Platforms Section */}
-        <div className="bg-white py-16">
+        <div className="bg-white dark:bg-gray-900 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white text-center mb-10 sm:mb-12">
               Supported Platforms
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {platforms.map((platform) => (
                 <div
                   key={platform.name}
-                  className="flex flex-col items-start rounded-lg border border-gray-200 p-5 hover:border-blue-500 transition-colors"
+                  className="flex flex-col items-start rounded-lg border border-gray-200 dark:border-gray-700 p-5 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
                 >
                   <div className={`inline-flex p-3 rounded-lg ${platform.color}`}>
                     <platform.icon className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold text-gray-900">{platform.name}</h3>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">{platform.name}</h3>
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                     Generate personalized messages optimized for {platform.name}
                   </p>
                 </div>
@@ -145,25 +145,25 @@ function Dashboard() {
         </div>
 
         {/* Features Section */}
-        <div className="bg-gray-50 py-16">
+        <div className="bg-gray-50 dark:bg-gray-800/50 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Why Choose Dmgenie?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">Why Choose Dmgenie?</h2>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-medium text-gray-900">AI-Powered Generation</h3>
-                <p className="mt-2 text-gray-600">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">AI-Powered Generation</h3>
+                <p className="mt-2 text-gray-600 dark:text-gray-300">
                   Our advanced AI understands context and generates highly personalized messages that resonate with your audience.
                 </p>
               </div>
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-medium text-gray-900">Multi-Platform Support</h3>
-                <p className="mt-2 text-gray-600">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Multi-Platform Support</h3>
+                <p className="mt-2 text-gray-600 dark:text-gray-300">
                   Generate messages optimized for different platforms while maintaining your brand voice.
                 </p>
               </div>
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-medium text-gray-900">Real-Time Analytics</h3>
-                <p className="mt-2 text-gray-600">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Real-Time Analytics</h3>
+                <p className="mt-2 text-gray-600 dark:text-gray-300">
                   Track your message performance and optimize your outreach strategy with detailed analytics.
                 </p>
               </div>
@@ -172,13 +172,13 @@ function Dashboard() {
         </div>
 
         {/* Testimonials Section */}
-        <div className="bg-white py-16">
+        <div className="bg-white dark:bg-gray-900 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
                 Trusted by Business Leaders
               </h2>
-              <p className="mt-4 text-lg text-gray-500">
+              <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">
                 See what our customers are saying about their experience with Dmgenie
               </p>
             </div>
@@ -187,7 +187,7 @@ function Dashboard() {
               {testimonials.map((testimonial) => (
                 <div
                   key={testimonial.name}
-                  className="relative p-6 bg-white rounded-2xl shadow-xl"
+                  className="relative p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl"
                 >
                   <div className="flex items-center space-x-1 mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
@@ -195,7 +195,7 @@ function Dashboard() {
                     ))}
                   </div>
                   <blockquote className="mt-4">
-                    <p className="text-lg text-gray-900">{testimonial.content}</p>
+                    <p className="text-lg text-gray-900 dark:text-white">{testimonial.content}</p>
                   </blockquote>
                   <div className="mt-6 flex items-center">
                     <img
@@ -204,8 +204,8 @@ function Dashboard() {
                       alt={testimonial.name}
                     />
                     <div className="ml-4">
-                      <div className="text-base font-medium text-gray-900">{testimonial.name}</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-base font-medium text-gray-900 dark:text-white">{testimonial.name}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
                         {testimonial.role} at {testimonial.company}
                       </div>
                     </div>
@@ -217,13 +217,13 @@ function Dashboard() {
         </div>
 
         {/* Pricing Section */}
-        <div id="pricing" className="bg-gray-50 py-16">
+        <div id="pricing" className="bg-gray-50 dark:bg-gray-800/50 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
                 Simple, Transparent Pricing
               </h2>
-              <p className="mt-4 text-lg text-gray-500">
+              <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">
                 Choose the perfect plan for your business needs
               </p>
             </div>
@@ -232,8 +232,9 @@ function Dashboard() {
               {plans.map((plan) => (
                 <div
                   key={plan.name}
-                  className={`relative p-8 bg-white rounded-2xl flex flex-col ${plan.popular ? 'ring-2 ring-blue-500 shadow-xl' : 'border border-gray-200'
-                    }`}
+                  className={`relative p-8 bg-white dark:bg-gray-800 rounded-2xl flex flex-col ${
+                    plan.popular ? 'ring-2 ring-blue-500 dark:ring-blue-400 shadow-xl' : 'border border-gray-200 dark:border-gray-700'
+                  }`}
                 >
                   {plan.popular && (
                     <span className="absolute top-0 -translate-y-1/2 bg-blue-500 text-white px-3 py-0.5 text-sm font-semibold tracking-wide rounded-full">
@@ -241,29 +242,30 @@ function Dashboard() {
                     </span>
                   )}
                   <div className="text-center">
-                    <h3 className="text-xl font-semibold text-gray-900">{plan.name}</h3>
-                    <p className="mt-2 text-gray-500">{plan.description}</p>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{plan.name}</h3>
+                    <p className="mt-2 text-gray-500 dark:text-gray-400">{plan.description}</p>
                     <div className="mt-4">
-                      <span className="text-4xl font-bold text-gray-900">${plan.price}</span>
-                      <span className="text-gray-500">/month</span>
+                      <span className="text-4xl font-bold text-gray-900 dark:text-white">${plan.price}</span>
+                      <span className="text-gray-500 dark:text-gray-400">/month</span>
                     </div>
                   </div>
                   <ul className="mt-8 space-y-4">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-center">
                         <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                        <span className="ml-3 text-gray-700">{feature}</span>
+                        <span className="ml-3 text-gray-700 dark:text-gray-300">{feature}</span>
                       </li>
                     ))}
                   </ul>
 
-                  {/* Stick button to bottom */} 
                   <div className="mt-auto pt-6">
-                    <button onClick={() => router.push(`/payment-dashboard?amount=${plan.price}`)}
-                     className={`w-full py-3 px-4 rounded-lg font-semibold ${plan.popular
-                        ? 'bg-blue-500 text-white hover:bg-blue-600'
-                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                        }`}
+                    <button 
+                      onClick={() => router.push(`/payment-dashboard?amount=${plan.price}`)}
+                      className={`w-full py-3 px-4 rounded-lg font-semibold ${
+                        plan.popular
+                          ? 'bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700'
+                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'
+                      }`}
                     >
                       Get started
                     </button>
@@ -272,22 +274,21 @@ function Dashboard() {
               ))}
             </div>
 
-
             {/* FAQ Section */}
             <div className="mt-16">
-              <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
                 Frequently Asked Questions
               </h3>
               <div className="grid gap-6 lg:grid-cols-2">
-                <div className="p-6 bg-white rounded-lg">
-                  <h4 className="font-semibold text-gray-900">Can I switch plans later?</h4>
-                  <p className="mt-2 text-gray-600">
+                <div className="p-6 bg-white dark:bg-gray-800 rounded-lg">
+                  <h4 className="font-semibold text-gray-900 dark:text-white">Can I switch plans later?</h4>
+                  <p className="mt-2 text-gray-600 dark:text-gray-300">
                     Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.
                   </p>
                 </div>
-                <div className="p-6 bg-white rounded-lg">
-                  <h4 className="font-semibold text-gray-900">Do you offer a free trial?</h4>
-                  <p className="mt-2 text-gray-600">
+                <div className="p-6 bg-white dark:bg-gray-800 rounded-lg">
+                  <h4 className="font-semibold text-gray-900 dark:text-white">Do you offer a free trial?</h4>
+                  <p className="mt-2 text-gray-600 dark:text-gray-300">
                     Yes, all plans come with a 14-day free trial. No credit card required to start.
                   </p>
                 </div>

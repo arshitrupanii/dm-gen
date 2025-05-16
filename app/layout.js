@@ -3,7 +3,6 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react"
 import { UserProvider } from './contexts/UserContext'
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -13,14 +12,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-      <html lang="en">
-        <body className={inter.className}>
-          <UserProvider>
-            {children}
-          </UserProvider>
-        </body>
-        <Analytics />
-      </html>
-
+    <html lang="en" className="dark">
+      <body className={`${inter.className} bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100`}>
+        <UserProvider>
+          {children}
+        </UserProvider>
+      </body>
+      <Analytics />
+    </html>
   );
 }

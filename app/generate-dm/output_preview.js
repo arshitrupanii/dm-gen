@@ -23,20 +23,20 @@ export default function OutputPreview({ message }) {
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold (**text**)
       .replace(/\*(.*?)\*/g, "<em>$1</em>") // Italic (*text*)
       .replace(/~~(.*?)~~/g, "<del>$1</del>") // Strikethrough (~~text~~)
-      .replace(/`(.*?)`/g, "<code class='bg-gray-100 px-1 rounded'>$1</code>"); // Inline code (`code`)
+      .replace(/`(.*?)`/g, "<code class='bg-gray-100 dark:bg-gray-700 px-1 rounded'>$1</code>"); // Inline code (`code`)
   };
 
   return (
-    <div className="bg-white p-8 lg:p-10 rounded-lg shadow-lg border border-gray-100">
+    <div className="bg-white dark:bg-gray-800 p-8 lg:p-10 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold text-gray-800">
+        <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
           Generated Message
         </h2>
         {message && (
           <button
             onClick={handleCopy}
-            className={`p-2 text-gray-500 hover:text-blue-500 transition-colors ${
-              copied ? "text-green-500" : ""
+            className={`p-2 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors ${
+              copied ? "text-green-500 dark:text-green-400" : ""
             }`}
             title={copied ? "Copied!" : "Copy to clipboard"}
           >
@@ -47,8 +47,8 @@ export default function OutputPreview({ message }) {
       <div
         className={`min-h-[650px] rounded-lg p-2 ${
           message
-            ? "bg-white text-gray-800"
-            : "flex items-center justify-center text-gray-400 bg-gray-50"
+            ? "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+            : "flex items-center justify-center text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700"
         }`}
       >
         {message ? (
@@ -59,7 +59,7 @@ export default function OutputPreview({ message }) {
         ) : (
           <div className="text-center">
             <MessageSquare className="w-14 h-14 mx-auto mb-4 opacity-40" />
-            <p className="text-lg">Your generated message will appear here...</p>
+            <p className="text-lg dark:text-gray-300">Your generated message will appear here...</p>
           </div>
         )}
       </div>

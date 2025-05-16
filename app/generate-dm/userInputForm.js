@@ -13,19 +13,19 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full pl-9 pr-10 py-2 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-all duration-200"
+        className="w-full pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-all duration-200"
       >
-        <span className="absolute left-2 top-2.5 text-gray-400">
+        <span className="absolute left-2 top-2.5 text-gray-400 dark:text-gray-500">
           <Icon className="h-5 w-5" />
         </span>
-        <span>{options.find(opt => opt.value === value)?.label}</span>
-        <span className={`absolute right-2 top-2.5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+        <span className="text-gray-900 dark:text-gray-100">{options.find(opt => opt.value === value)?.label}</span>
+        <span className={`absolute right-2 top-2.5 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
           <ChevronDown className="h-5 w-5" />
         </span>
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg py-1 max-h-60 overflow-auto">
+        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md shadow-lg py-1 max-h-60 overflow-auto">
           {options.map((option) => (
             <button
               key={option.value}
@@ -33,7 +33,9 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`w-full px-3 py-2 text-left flex items-center space-x-3 hover:bg-blue-50 transition-colors ${value === option.value ? 'bg-blue-50 text-blue-600' : ''}`}
+              className={`w-full px-3 py-2 text-left flex items-center space-x-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors ${
+                value === option.value ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'
+              }`}
             >
               <option.icon className="h-5 w-5" />
               <span>{option.label}</span>
@@ -138,7 +140,7 @@ export default function MessageForm({ onMessageGenerated }) {
       <form action="" onSubmit={handleGenerate} className="space-y-6">
         {/* Platform and Message Type */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Platform</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Platform</label>
           <CustomDropdown
             options={platformOptions}
             value={platform}
@@ -148,7 +150,7 @@ export default function MessageForm({ onMessageGenerated }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Message Type</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Message Type</label>
           <CustomDropdown
             options={messageTypeOptions}
             value={messageType}
@@ -159,15 +161,15 @@ export default function MessageForm({ onMessageGenerated }) {
 
         {/* Recipient Info */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Recipient Details</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Recipient Details</label>
           <div className="relative">
             <input
               ref={recipientRef}
               type="text"
               placeholder="John Smith - Software Engineer"
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
-            <span className="absolute left-2 top-2.5 text-gray-400 pointer-events-none">
+            <span className="absolute left-2 top-2.5 text-gray-400 dark:text-gray-500 pointer-events-none">
               <User className="h-5 w-5" />
             </span>
           </div>
@@ -175,22 +177,22 @@ export default function MessageForm({ onMessageGenerated }) {
 
         {/* Message Content */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Message Purpose</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Message Purpose</label>
           <div className="relative">
             <textarea
               ref={purposeRef}
               rows={2}
               placeholder="What's the main purpose of your message?"
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
-            <span className="absolute left-2 top-2.5 text-gray-400 pointer-events-none">
+            <span className="absolute left-2 top-2.5 text-gray-400 dark:text-gray-500 pointer-events-none">
               <FileText className="h-5 w-5" />
             </span>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tone</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Tone</label>
           <CustomDropdown
             options={toneOptions}
             value={tone}
@@ -201,15 +203,15 @@ export default function MessageForm({ onMessageGenerated }) {
 
         {/* Key Points */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Key Points & CTA (optional)</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Key Points & CTA (optional)</label>
           <div className="relative">
             <textarea
               ref={keyPointsRef}
               rows={3}
               placeholder="• Main points to include&#10;• Your call-to-action"
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
-            <span className="absolute left-2 top-2.5 text-gray-400 pointer-events-none">
+            <span className="absolute left-2 top-2.5 text-gray-400 dark:text-gray-500 pointer-events-none">
               <FileText className="h-5 w-5" />
             </span>
           </div>
@@ -217,7 +219,7 @@ export default function MessageForm({ onMessageGenerated }) {
 
         {/* Error Message */}
         {error && (
-          <div className="text-red-600 text-sm">
+          <div className="text-red-600 dark:text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -226,14 +228,17 @@ export default function MessageForm({ onMessageGenerated }) {
         <button
           type="submit"
           disabled={isGenerating}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-md flex items-center justify-center space-x-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="w-full bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white py-3 px-4 rounded-md flex items-center justify-center space-x-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <Send className="h-5 w-5" />
           <span>{isGenerating ? 'Generating...' : 'Generate AI Message'}</span>
         </button>
       </form>
-      <ToastContainer position="top-right" autoClose={3000} />
-
+      <ToastContainer 
+        position="top-right" 
+        autoClose={3000}
+        theme="dark"
+      />
     </div>
   );
 }
