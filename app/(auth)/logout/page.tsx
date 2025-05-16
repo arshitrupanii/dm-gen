@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 
 const LogoutPage = () => {
   const router = useRouter();
-  router.push("/dashboard");
+  router.push("/");
 };
 
 export default LogoutPage;

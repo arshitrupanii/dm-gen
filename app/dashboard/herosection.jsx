@@ -1,17 +1,38 @@
-import {React, useEffect, useState} from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { createClient } from "utils/supabase/client";
 import { ArrowRight, MessageSquare, Sparkles, Zap } from 'lucide-react';
+import { useUser } from '../contexts/UserContext';
 
 const HeroSection = () => {
-  const [user, setUser] = useState(null);
-  const supabase = createClient();
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    fetchUser();
-  }, []);
+  const { userData, updateUserData, user, isLoading } = useUser();
+
+  const getStartedButton = useMemo(() => {
+    if (user) {
+      return (
+        <a
+          href="/personal-details"
+          className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
+        >
+          Get Started Free
+          <ArrowRight className="ml-2 h-5 w-5" />
+        </a>
+      );
+    } else {
+      return (
+        <a
+          href="/login"
+          className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
+        >
+          Get Started Free
+          <ArrowRight className="ml-2 h-5 w-5" />
+        </a>
+      );
+    }
+  }, [user]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
@@ -29,21 +50,7 @@ const HeroSection = () => {
               </p>
               
               <div className="mt-8 flex flex-wrap gap-4">
-                {user ? 
-                <a
-                href="/personal-details"
-                className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
-              >
-                Get Started Free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </a> : <a
-                  href="/login"
-                  className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
-                >
-                  Get Started Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </a>}
-                
+                {getStartedButton}
               </div>
               
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:mt-10">
@@ -111,7 +118,6 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-      
     </div>
   );
 };

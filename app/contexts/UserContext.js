@@ -1,5 +1,7 @@
 "use client"
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createClient } from 'utils/supabase/client';
+import { useRouter } from 'next/navigation';
 
 const UserContext = createContext();
 
@@ -10,6 +12,40 @@ export function UserProvider({ children }) {
     experienceLevel: 'beginner',
     companyName: '',
   });
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setIsLoading(true);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+      setIsLoading(false);
+    });
+    fetchUser();
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
+
+  const logout = async () => {
+    setIsLoading(true);
+    await supabase.auth.signOut();
+    setUser(null);
+    setIsLoading(false);
+    router.push('/dashboard');
+  };
 
   const updateUserData = (newData) => {
     setUserData(prevData => ({
@@ -28,7 +64,7 @@ export function UserProvider({ children }) {
   };
 
   return (
-    <UserContext.Provider value={{ userData, updateUserData, clearUserData }}>
+    <UserContext.Provider value={{ userData, updateUserData, clearUserData, user, isLoading, logout }}>
       {children}
     </UserContext.Provider>
   );

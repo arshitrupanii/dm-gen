@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Building2, Briefcase, GraduationCap, ChevronDown } from 'lucide-react';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation'; // For Next.js 13+ with App Router
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useUser } from '../contexts/UserContext';
+import { LoginForm } from "../(auth)/login/components/LoginForm";
+import { createClient } from 'utils/supabase/client';
 
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,50 +52,7 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
   );
 }
 
-function App() {
-  const router = useRouter();
-  const { userData, updateUserData } = useUser();
-  const [formData, setFormData] = useState(userData);
-
-  const experienceOptions = [
-    { value: "beginner", label: "👦 Beginner (0-1 year)", icon: GraduationCap },
-    { value: "intermediate", label: "👨🏻‍💻 Intermediate (1-3 years)", icon: GraduationCap },
-    { value: "experienced", label: "👩🏻‍💼 Experienced (3+ years)", icon: GraduationCap },
-  ];
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleDropdownChange = (value) => {
-    setFormData(prev => ({
-      ...prev,
-      experienceLevel: value
-    }));
-  };
-
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-
-    // Validation
-    if (!formData.fullName.trim()) {
-      toast.error("Full Name is required!");
-      return;
-    }
-    if (!formData.jobTitle.trim()) {
-      toast.error("Job Title is required!");
-      return;
-    }
-
-    // Update the global user context
-    updateUserData(formData);
-    router.push("/generate-dm");
-  };
-
+const PersonalDetailsForm = ({ formData, handleInputChange, handleDropdownChange, handleSubmit, experienceOptions }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
       <Navbar />
@@ -208,4 +167,86 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  const router = useRouter();
+  const { userData, updateUserData, user, isLoading } = useUser();
+  const [formData, setFormData] = useState(userData);
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace('/login');
+    }
+  }, [isLoading, user, router]);
+
+  if (!isLoading && !user) return null;
+
+  const experienceOptions = [
+    { value: "beginner", label: "👦 Beginner (0-1 year)", icon: GraduationCap },
+    { value: "intermediate", label: "👨🏻‍💻 Intermediate (1-3 years)", icon: GraduationCap },
+    { value: "experienced", label: "👩🏻‍💼 Experienced (3+ years)", icon: GraduationCap },
+  ];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleDropdownChange = (value) => {
+    setFormData(prev => ({
+      ...prev,
+      experienceLevel: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (!formData.fullName.trim()) {
+      toast.error("Full Name is required!");
+      return;
+    }
+    if (!formData.jobTitle.trim()) {
+      toast.error("Job Title is required!");
+      return;
+    }
+
+    // Update the global user context
+    updateUserData(formData);
+
+    // Prepare data for Supabase
+    const payload = {
+      user_id: user.id, // or user.email if you use email as PK
+      ...formData,
+    };
+
+    console.log("Payload to Supabase:", payload);
+
+    // Store in Supabase
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('user_details')
+      .upsert(payload);
+
+    if (error) {
+      console.error("Supabase error:", error);
+      toast.error("Failed to save your details. Please try again.");
+      return;
+    }
+
+    router.push("/generate-dm");
+  };
+
+  return (
+    user ? <PersonalDetailsForm 
+      formData={formData} 
+      handleInputChange={handleInputChange} 
+      handleDropdownChange={handleDropdownChange} 
+      handleSubmit={handleSubmit} 
+      experienceOptions={experienceOptions} 
+    /> : <LoginForm />
+  );
+}
