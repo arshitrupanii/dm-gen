@@ -23,6 +23,7 @@ export async function signInWithGoogle() {
       queryParams: {
         access_type: "offline",
         prompt: "consent",
+          redirectTo: 'https://dmgenie.vercel.app/dashboard' // ✅ CORRECT
       },
     },
   });
