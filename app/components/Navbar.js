@@ -1,42 +1,71 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "utils/supabase/client";
-import { Menu, X, User, Loader2 } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { Button } from "./ui/button";
 import Logo from './Logo';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [authState, setAuthState] = useState({ 
+    user: null, 
+    isChecked: false 
+  });
   const supabase = createClient();
   const router = useRouter();
 
+  // Memoize auth state to avoid unnecessary re-renders
+  const { user, isChecked } = useMemo(() => authState, [authState]);
+
   useEffect(() => {
+    // Initialize auth state from localStorage if available
+    const cachedUser = localStorage.getItem('cachedUser');
+    if (cachedUser) {
+      try {
+        setAuthState({ user: JSON.parse(cachedUser), isChecked: true });
+      } catch (e) {
+        localStorage.removeItem('cachedUser');
+      }
+    }
+
     const fetchUser = async () => {
       try {
-        setIsLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
+        setAuthState({ user, isChecked: true });
+        
+        // Cache user data in localStorage
+        if (user) {
+          localStorage.setItem('cachedUser', JSON.stringify(user));
+        } else {
+          localStorage.removeItem('cachedUser');
+        }
       } catch (error) {
         console.error("Error fetching user:", error);
-      } finally {
-        setIsLoading(false);
+        setAuthState(current => ({ ...current, isChecked: true }));
       }
     };
     
     // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setUser(session?.user || null);
-        setIsLoading(false);
+        const newUser = session?.user || null;
+        setAuthState({ user: newUser, isChecked: true });
+        
+        // Update cached user on auth state change
+        if (newUser) {
+          localStorage.setItem('cachedUser', JSON.stringify(newUser));
+        } else {
+          localStorage.removeItem('cachedUser');
+        }
       }
     );
 
-    // Initial fetch
-    fetchUser();
+    // Only fetch if we don't have cached data
+    if (!cachedUser) {
+      fetchUser();
+    }
 
     // Clean up subscription when component unmounts
     return () => {
@@ -45,64 +74,46 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    setIsLoading(true);
     await supabase.auth.signOut();
-    setUser(null);
-    setIsLoading(false);
+    setAuthState({ user: null, isChecked: true });
+    localStorage.removeItem('cachedUser');
     router.push('/dashboard');
   };
 
-  // User Auth UI Components
-  const renderUserAuthDesktop = () => {
-    if (isLoading) {
-      return (
-        <div className="flex items-center px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30">
-          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-          <span>Loading...</span>
-        </div>
-      );
+  // User Auth UI Components based on memoized values
+  const renderUserAuth = useMemo(() => {
+    // If auth check hasn't completed and we don't have cached data, return null (nothing)
+    if (!isChecked && !user) {
+      return {
+        desktop: null,
+        mobile: null,
+        showProfile: false
+      };
     }
     
-    if (user) {
-      return (
-        <div className="flex items-center space-x-2">
-          <p className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 font-medium">
-            Hello, <span className="font-bold">{user?.user_metadata?.full_name ?? "User"}</span>!
-          </p>
-          <Button onClick={handleLogout}>Log out</Button>
-        </div>
-      );
-    }
+    const showProfile = !!user;
     
-    return (
+    const desktop = user ? (
+      <div className="flex items-center space-x-2">
+        <p className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 font-medium">
+          Hello, <span className="font-bold">{user?.user_metadata?.full_name ?? "User"}</span>!
+        </p>
+        <Button onClick={handleLogout}>Log out</Button>
+      </div>
+    ) : (
       <Button variant="outline" onClick={() => router.push("/login")}>
         Login
       </Button>
     );
-  };
-
-  const renderUserAuthMobile = () => {
-    if (isLoading) {
-      return (
-        <div className="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30">
-          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-          <span>Loading...</span>
-        </div>
-      );
-    }
     
-    if (user) {
-      return (
-        <div className="flex flex-col space-y-2">
-          <p className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 font-medium">
-            Hello, <span className="font-bold">{user?.user_metadata?.full_name ?? "User"}</span>!
-          </p>
-          <Button onClick={handleLogout}>Logout</Button>
-        </div>
-      );
-    }
-    
-    return (
+    const mobile = user ? (
+      <div className="flex flex-col space-y-2">
+        <p className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 font-medium">
+          Hello, <span className="font-bold">{user?.user_metadata?.full_name ?? "User"}</span>!
+        </p>
+        <Button onClick={handleLogout}>Logout</Button>
+      </div>
+    ) : (
       <Button
         variant="outline"
         className="w-full"
@@ -114,7 +125,9 @@ const Navbar = () => {
         Login
       </Button>
     );
-  };
+    
+    return { desktop, mobile, showProfile };
+  }, [user, isChecked]);
 
   return (
     <nav className="w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800 shadow-sm">
@@ -131,7 +144,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-2">
-            {!isLoading && user && (
+            {renderUserAuth.showProfile && (
               <Link
                 href="/personal-details"
                 className="flex items-center px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-200 font-medium group"
@@ -140,7 +153,7 @@ const Navbar = () => {
                 Profile
               </Link>
             )}
-            {renderUserAuthDesktop()}
+            {renderUserAuth.desktop}
           </div>
 
           <div className="md:hidden flex items-center">
@@ -162,7 +175,7 @@ const Navbar = () => {
         }`}
       >
         <div className="px-4 py-3 space-y-2">
-          {!isLoading && user && (
+          {renderUserAuth.showProfile && (
             <Link
               href="/personal-details"
               className="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-200 font-medium"
@@ -172,7 +185,7 @@ const Navbar = () => {
               Profile
             </Link>
           )}
-          {renderUserAuthMobile()}
+          {renderUserAuth.mobile}
         </div>
       </div>
     </nav>
