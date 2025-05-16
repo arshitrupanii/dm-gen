@@ -1,7 +1,18 @@
-import React from 'react';
+import {React, useEffect, useState} from 'react';
+import { createClient } from "utils/supabase/client";
 import { ArrowRight, MessageSquare, Sparkles, Zap } from 'lucide-react';
 
 const HeroSection = () => {
+  const [user, setUser] = useState(null);
+  const supabase = createClient();
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+  }, []);
+
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
@@ -9,22 +20,30 @@ const HeroSection = () => {
           {/* Left side content */}
           <div className="lg:col-span-7">
             <div className="text-left">
-              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-6xl leading-tight">
+              <h1 className="text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
                 <span className="block text-blue-700 dark:text-blue-400">AI-Powered</span>
                 <span className="block">Message Generation</span>
               </h1>
-              <p className="mt-6 text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl">
+              <p className="mt-6 text-lg sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl">
                 Create personalized, high-converting messages for all your platforms in seconds, not hours.
               </p>
               
               <div className="mt-8 flex flex-wrap gap-4">
+                {user ? 
                 <a
-                  href="/personal-details"
+                href="/personal-details"
+                className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
+              >
+                Get Started Free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a> : <a
+                  href="/login"
                   className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
                 >
                   Get Started Free
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
+                </a>}
+                
               </div>
               
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:mt-10">
@@ -86,25 +105,13 @@ const HeroSection = () => {
                   <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User" className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800" />
                   <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User" className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-800" />
                 </div>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Trusted by 10,000+ professionals</span>
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Trusted by 10,000+ professionals</span>
               </div>
             </div>
           </div>
         </div>
       </div>
       
-      {/* Wave divider */}
-      <div className="relative h-16 bg-white dark:bg-gray-900">
-        <svg
-          className="absolute bottom-0 w-full h-16 text-white dark:text-gray-900"
-          preserveAspectRatio="none"
-          viewBox="0 0 1440 54"
-          fill="currentColor"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M0 0L1440 0L1440 54C1440 54 1320 34 1200 34C1080 34 960 54 840 54C720 54 600 34 480 34C360 34 240 54 120 54C60 54 0 44 0 44V0Z" />
-        </svg>
-      </div>
     </div>
   );
 };

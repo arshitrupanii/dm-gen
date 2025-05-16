@@ -2,30 +2,118 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "utils/supabase/client";
-import { Sparkles, Menu, X, User } from "lucide-react";
+import { Menu, X, User, Loader2 } from "lucide-react";
 import { useRouter } from 'next/navigation';
-import { signout } from "lib/auth-actions";
 import { Button } from "./ui/button";
 import Logo from './Logo';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
   const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      try {
+        setIsLoading(true);
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
+    
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user || null);
+        setIsLoading(false);
+      }
+    );
+
+    // Initial fetch
     fetchUser();
+
+    // Clean up subscription when component unmounts
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const handleLogout = async () => {
+    setIsLoading(true);
     await supabase.auth.signOut();
     setUser(null);
+    setIsLoading(false);
     router.push('/dashboard');
+  };
+
+  // User Auth UI Components
+  const renderUserAuthDesktop = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30">
+          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+          <span>Loading...</span>
+        </div>
+      );
+    }
+    
+    if (user) {
+      return (
+        <div className="flex items-center space-x-2">
+          <p className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 font-medium">
+            Hello, <span className="font-bold">{user?.user_metadata?.full_name ?? "User"}</span>!
+          </p>
+          <Button onClick={handleLogout}>Log out</Button>
+        </div>
+      );
+    }
+    
+    return (
+      <Button variant="outline" onClick={() => router.push("/login")}>
+        Login
+      </Button>
+    );
+  };
+
+  const renderUserAuthMobile = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30">
+          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+          <span>Loading...</span>
+        </div>
+      );
+    }
+    
+    if (user) {
+      return (
+        <div className="flex flex-col space-y-2">
+          <p className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 font-medium">
+            Hello, <span className="font-bold">{user?.user_metadata?.full_name ?? "User"}</span>!
+          </p>
+          <Button onClick={handleLogout}>Logout</Button>
+        </div>
+      );
+    }
+    
+    return (
+      <Button
+        variant="outline"
+        className="w-full"
+        onClick={() => {
+          router.push("/login");
+          setIsMenuOpen(false);
+        }}
+      >
+        Login
+      </Button>
+    );
   };
 
   return (
@@ -43,7 +131,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-2">
-            {user && (
+            {!isLoading && user && (
               <Link
                 href="/personal-details"
                 className="flex items-center px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-200 font-medium group"
@@ -52,18 +140,7 @@ const Navbar = () => {
                 Profile
               </Link>
             )}
-            {user ? (
-              <div className="flex items-center space-x-2">
-                <p className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 font-medium">
-                  Hello, <span className="font-bold">{user?.user_metadata?.full_name ?? "User"}</span>!
-                </p>
-                <Button onClick={handleLogout}>Log out</Button>
-              </div>
-            ) : (
-              <Button variant="outline" onClick={() => router.push("/login")}>
-                Login
-              </Button>
-            )}
+            {renderUserAuthDesktop()}
           </div>
 
           <div className="md:hidden flex items-center">
@@ -85,7 +162,7 @@ const Navbar = () => {
         }`}
       >
         <div className="px-4 py-3 space-y-2">
-          {user && (
+          {!isLoading && user && (
             <Link
               href="/personal-details"
               className="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-200 font-medium"
@@ -95,25 +172,7 @@ const Navbar = () => {
               Profile
             </Link>
           )}
-          {user ? (
-            <div className="flex items-center space-x-2">
-              <p className="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/30 font-medium">
-                Hello, <span className="font-bold">{user?.user_metadata?.full_name ?? "User"}</span>!
-              </p>
-              <Button onClick={handleLogout}>Logout</Button>
-            </div>
-          ) : (
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => {
-                router.push("/login");
-                setIsMenuOpen(false);
-              }}
-            >
-              Login
-            </Button>
-          )}
+          {renderUserAuthMobile()}
         </div>
       </div>
     </nav>
