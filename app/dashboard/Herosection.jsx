@@ -4,7 +4,19 @@ import { ArrowRight, MessageSquare, Sparkles, Zap } from 'lucide-react';
 import { useUser } from '../contexts/UserContext';
 
 const HeroSection = () => {
-  const { userData, updateUserData, user, isLoading } = useUser();
+  const { user, isLoading } = useUser();
+  const [showLoading, setShowLoading] = useState(false);
+
+  // Add a slight delay before showing loading state to prevent flash
+  useEffect(() => {
+    let timeout;
+    if (isLoading) {
+      timeout = setTimeout(() => setShowLoading(true), 200);
+    } else {
+      setShowLoading(false);
+    }
+    return () => clearTimeout(timeout);
+  }, [isLoading]);
 
   const getStartedButton = useMemo(() => {
     if (user) {
@@ -30,8 +42,25 @@ const HeroSection = () => {
     }
   }, [user]);
 
-  if (isLoading) {
-    return null;
+  if (isLoading && showLoading) {
+    return (
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
+          <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-7">
+              <div className="text-left space-y-6">
+                <div className="h-12 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                <div className="h-6 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                <div className="h-12 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              </div>
+            </div>
+            <div className="mt-12 lg:mt-0 lg:col-span-5">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl h-96 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -48,11 +77,11 @@ const HeroSection = () => {
               <p className="mt-6 text-lg sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl">
                 Create personalized, high-converting messages for all your platforms in seconds, not hours.
               </p>
-              
+
               <div className="mt-8 flex flex-wrap gap-4">
                 {getStartedButton}
               </div>
-              
+
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:mt-10">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -75,7 +104,7 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Right side image/demo */}
           <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-span-5">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
@@ -104,7 +133,7 @@ const HeroSection = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-6 text-center">
               <div className="flex items-center justify-center space-x-3">
                 <div className="flex -space-x-2">

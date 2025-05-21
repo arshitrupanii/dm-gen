@@ -1,9 +1,21 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createClient } from "utils/supabase/server";
 
 export async function POST(request) {
-
   try {
     const data = await request.json();
+    const supabase = createClient();
+
+    // Fetch user details from Supabase
+    const { data: userDetails, error } = await supabase
+      .from('user_details')
+      .select('fullName, jobTitle, experienceLevel, companyName')
+      .single();
+
+    if (error) {
+      throw new Error('Failed to fetch user details');
+    }
+
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -19,10 +31,10 @@ export async function POST(request) {
     - If the platform specified isn't supported, respond with: "Sorry, I don't currently support messages for ${data.platform}. Here are the platforms I can help with: Email, LinkedIn, Twitter, Instagram, WhatsApp. 🙂"
     
     ## 🧑‍💼 SENDER PROFILE
-    - Name: ${data.userDetails.fullName || "Not specified"}
-    - Role: ${data.userDetails.jobTitle || "Not specified"}
-    - Company: ${data.userDetails.companyName || "Not specified"}
-    - Experience Level: ${data.userDetails.experienceLevel || "Not specified"}
+    - Name: ${userDetails.full_name || "Not specified"}
+    - Role: ${userDetails.job_title || "Not specified"}
+    - Company: ${userDetails.company_name || "Not specified"}
+    - Experience Level: ${userDetails.experience_level || "Not specified"}
     
     ## 📨 MESSAGE CONTEXT
     - Platform: ${data.platform}
