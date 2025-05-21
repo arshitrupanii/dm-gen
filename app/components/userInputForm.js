@@ -3,8 +3,6 @@ import { Mail, MessageSquare, Twitter, MessageCircle, Send, Building2, User, Fil
 import { useState, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useUser } from '../contexts/UserContext';
-
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -48,7 +46,6 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
 }
 
 export default function MessageForm({ onMessageGenerated }) {
-  const { userData } = useUser();
   const [platform, setPlatform] = useState("email");
   const [messageType, setMessageType] = useState("cold_outreach");
   const [tone, setTone] = useState("professional");
@@ -88,13 +85,7 @@ export default function MessageForm({ onMessageGenerated }) {
           tone,
           purpose: purposeRef.current.value,
           keyPoints: keyPointsRef.current.value,
-          recipientDetails: recipientRef.current.value,
-          userDetails: {
-            fullName: userData.fullName,
-            jobTitle: userData.jobTitle,
-            companyName: userData.companyName,
-            experienceLevel: userData.experienceLevel
-          }
+          recipientDetails: recipientRef.current.value
         }),
       });
 

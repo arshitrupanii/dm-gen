@@ -1,19 +1,27 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { createClient } from "utils/supabase/server";
+import { createClient } from 'utils/supabase/server';
 
 export async function POST(request) {
   try {
     const data = await request.json();
-    const supabase = createClient();
+    
+    // Get user details from Supabase
+    const supabase = await createClient();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      return Response.json({ error: 'Unauthorized - Please sign in' }, { status: 401 });
+    }
 
-    // Fetch user details from Supabase
-    const { data: userDetails, error } = await supabase
+    // Fetch user details from the user_details table
+    const { data: userDetails, error: detailsError } = await supabase
       .from('user_details')
-      .select('fullName, jobTitle, experienceLevel, companyName')
+      .select('fullName, jobTitle, companyName, experienceLevel')
+      .eq('user_id', user.id)
       .single();
 
-    if (error) {
-      throw new Error('Failed to fetch user details');
+    if (detailsError) {
+      return Response.json({ error: 'Failed to fetch user details' }, { status: 500 });
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -31,10 +39,10 @@ export async function POST(request) {
     - If the platform specified isn't supported, respond with: "Sorry, I don't currently support messages for ${data.platform}. Here are the platforms I can help with: Email, LinkedIn, Twitter, Instagram, WhatsApp. 🙂"
     
     ## 🧑‍💼 SENDER PROFILE
-    - Name: ${userDetails.full_name || "Not specified"}
-    - Role: ${userDetails.job_title || "Not specified"}
-    - Company: ${userDetails.company_name || "Not specified"}
-    - Experience Level: ${userDetails.experience_level || "Not specified"}
+    - Name: ${userDetails?.fullName || "Not specified"}
+    - Role: ${userDetails?.jobTitle || "Not specified"}
+    - Company: ${userDetails?.companyName || "Not specified"}
+    - Experience Level: ${userDetails?.experienceLevel || "Not specified"}
     
     ## 📨 MESSAGE CONTEXT
     - Platform: ${data.platform}

@@ -1,12 +1,11 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { User, Building2, Briefcase, GraduationCap, ChevronDown } from 'lucide-react';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { createClient } from 'utils/supabase/client';
 
 // Constants
 const EXPERIENCE_OPTIONS = [
@@ -15,22 +14,47 @@ const EXPERIENCE_OPTIONS = [
   { value: "experienced", label: "👩🏻‍💼 Experienced (3+ years)", icon: GraduationCap },
 ];
 
+// Form Field Component
+function FormField({ label, name, value, onChange, placeholder, icon: Icon, required }) {
+  return (
+    <div className="mb-6">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          type="text"
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          required={required}
+          className="w-full pl-9 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+        />
+        <span className="absolute left-3 top-3.5 text-gray-400 dark:text-gray-500">
+          <Icon className="h-5 w-5" />
+        </span>
+      </div>
+    </div>
+  );
+}
+
 // Custom Dropdown Component
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative mb-8">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full pl-9 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-all duration-200"
+        className="w-full pl-9 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-all duration-200"
       >
-        <span className="absolute left-2 top-2.5 text-gray-400 dark:text-gray-500">
+        <span className="absolute left-3 top-3.5 text-gray-400 dark:text-gray-500">
           <Icon className="h-5 w-5" />
         </span>
         <span className="text-gray-900 dark:text-gray-100">{options.find(opt => opt.value === value)?.label}</span>
-        <span className={`absolute right-2 top-2.5 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+        <span className={`absolute right-3 top-3.5 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
           <ChevronDown className="h-5 w-5" />
         </span>
       </button>
@@ -44,9 +68,7 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`w-full px-3 py-2 text-left flex items-center space-x-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors ${
-                value === option.value ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'
-              }`}
+              className={`w-full px-4 py-3 text-left flex items-center space-x-3 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors ${value === option.value ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'}`}
             >
               <option.icon className="h-5 w-5" />
               <span>{option.label}</span>
@@ -58,8 +80,55 @@ function CustomDropdown({ options, value, onChange, icon: Icon }) {
   );
 }
 
-// Main Form Component
-const PersonalDetailsForm = ({ formData, handleInputChange, handleDropdownChange, handleSubmit }) => {
+// Main App Component
+export default function App() {
+  const router = useRouter();
+  
+  const [formData, setFormData] = useState({
+    fullName: '',
+    jobTitle: '',
+    companyName: '',
+    experienceLevel: 'beginner'
+  });
+
+  // handle input changes 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  const handleDropdownChange = (value) => {
+    setFormData(prev => ({ ...prev, experienceLevel: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.fullName.trim() || !formData.jobTitle.trim()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/personal-details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save user details');
+      }
+
+      // Navigate to the next page on success
+      router.push("/generate-dm");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
       <Navbar />
@@ -74,15 +143,14 @@ const PersonalDetailsForm = ({ formData, handleInputChange, handleDropdownChange
         </div>
       </div>
 
-      <div className="max-w-lg md:max-w-3xl mx-auto my-10">
+      <div className="max-w-lg md:max-w-3xl mx-auto my-10 px-4">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8 transition-all duration-300 hover:shadow-2xl">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 text-gray-800 dark:text-white flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-8 text-gray-800 dark:text-white flex items-center gap-2">
             <User className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             Basic Information
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Form Fields */}
+          <form onSubmit={handleSubmit}>
             <FormField
               label="What's your full name?"
               name="fullName"
@@ -112,7 +180,7 @@ const PersonalDetailsForm = ({ formData, handleInputChange, handleDropdownChange
               icon={Building2}
             />
 
-            <div>
+            <div className="mb-8">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Experience Level
               </label>
@@ -134,121 +202,4 @@ const PersonalDetailsForm = ({ formData, handleInputChange, handleDropdownChange
       <Footer />
     </div>
   );
-};
-
-// Form Field Component
-const FormField = ({ label, name, value, onChange, placeholder, icon: Icon, required }) => (
-  <div>
-    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-      {label}
-    </label>
-    <div className="relative">
-      <input
-        type="text"
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-        className="w-full p-3 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-      />
-      <Icon className="w-5 h-5 text-gray-400 dark:text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
-    </div>
-  </div>
-);
-
-// Main App Component
-export default function App() {
-  const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    fullName: '',
-    jobTitle: '',
-    companyName: '',
-    experienceLevel: 'beginner'
-  });
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const supabase = createClient();
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          setUser(user);
-          // Fetch existing user details
-          const { data, error } = await supabase
-            .from('user_details')
-            .select()
-            .eq('user_id', user.id)
-            .single();
-
-          if (data) {
-            setFormData({
-              fullName: data.full_name,
-              jobTitle: data.job_title,
-              companyName: data.company_name || '',
-              experienceLevel: data.experience_level
-            });
-          }
-        } else {
-          router.replace('/login');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        router.replace('/login');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkUser();
-  }, [router]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleDropdownChange = (value) => {
-    setFormData(prev => ({ ...prev, experienceLevel: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!formData.fullName.trim() || !formData.jobTitle.trim()) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/user_details', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user.id,
-          ...formData
-        })
-      });
-
-      const result = await response.json();
-      if (result.error) throw new Error(result.error);
-
-      router.push("/generate-dm");
-    } catch (error) {
-      toast.error(error.message || "Failed to save details");
-    }
-  };
-
-  if (isLoading) return null;
-
-  return user ? (
-    <PersonalDetailsForm
-      formData={formData}
-      handleInputChange={handleInputChange}
-      handleDropdownChange={handleDropdownChange}
-      handleSubmit={handleSubmit}
-    />
-  ) : <LoginForm />;
 }

@@ -1,15 +1,18 @@
 "use client"
 import { MessageSquare } from "lucide-react";
-import MessageForm from "./userInputForm";
-import OutputPreview from "./output_preview";
-import { useState, useEffect } from "react";
+import MessageForm from "../components/userInputForm";
+import OutputPreview from "../components/output_preview";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useUser } from '../contexts/UserContext';
-import { useRouter } from 'next/navigation';
-import { LoginForm } from "../(auth)/login/components/LoginForm";
 
-const Generate = ({ handleMessageGenerated, generatedMessage }) => {
+export default function Home() {
+  const [generatedMessage, setGeneratedMessage] = useState("");
+
+  const handleMessageGenerated = (message) => {
+    setGeneratedMessage(message);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
       <Navbar/>
@@ -62,30 +65,5 @@ const Generate = ({ handleMessageGenerated, generatedMessage }) => {
       </div>
       <Footer/>
     </div>
-  );
-}
-
-export default function Home() {
-
-  const { userData, updateUserData, user, isLoading } = useUser();
-  console.log(userData)
-
-  const router = useRouter();
-  const [generatedMessage, setGeneratedMessage] = useState("");
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.replace('/login');
-    }
-  }, [isLoading, user, router]);
-
-  if (!isLoading && !user) return null;
-
-  const handleMessageGenerated = (message) => {
-    setGeneratedMessage(message);
-  };
-
-  return (
-    user ? <Generate handleMessageGenerated={handleMessageGenerated} generatedMessage={generatedMessage} /> : <LoginForm />
   );
 }

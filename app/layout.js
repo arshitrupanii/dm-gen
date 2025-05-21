@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react"
-import { UserProvider } from './contexts/UserContext'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,11 +13,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100`}>
-        <UserProvider>
           {children}
-        </UserProvider>
+          <Analytics />
       </body>
-      <Analytics />
     </html>
   );
 }

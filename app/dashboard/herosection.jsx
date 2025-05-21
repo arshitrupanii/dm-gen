@@ -1,69 +1,115 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { createClient } from "utils/supabase/client";
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, MessageSquare, Sparkles, Zap } from 'lucide-react';
-import { useUser } from '../contexts/UserContext';
+import { useRouter } from 'next/navigation';
+import { createClient } from "utils/supabase/client";
 
 const HeroSection = () => {
-  const { user, isLoading } = useUser();
-  const [showLoading, setShowLoading] = useState(false);
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [hasProfile, setHasProfile] = useState(false);
+    const supabase = createClient();
 
-  // Add a slight delay before showing loading state to prevent flash
-  useEffect(() => {
-    let timeout;
+    useEffect(() => {
+        const checkUserAndProfile = async () => {
+            try {
+                // Check if user is logged in
+                const { data: { user }, error: userError } = await supabase.auth.getUser();
+                
+                if (userError || !user) {
+                    setUser(null);
+                    setHasProfile(false);
+                    setIsLoading(false);
+                    return;
+                }
+
+                setUser(user);
+
+                // Check if user has completed profile
+                const { data: userDetails, error: detailsError } = await supabase
+                    .from('user_details')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .single();
+
+                setHasProfile(!!userDetails && !detailsError);
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Error checking user status:', error);
+                setUser(null);
+                setHasProfile(false);
+                setIsLoading(false);
+            }
+        };
+
+        checkUserAndProfile();
+    }, []);
+
+    const handleGetStarted = () => {
+        if (!user) {
+            router.push('/login');
+        } else if (!hasProfile) {
+            router.push('/personal-details');
+        } else {
+            router.push('/generate-dm');
+        }
+    };
+
     if (isLoading) {
-      timeout = setTimeout(() => setShowLoading(true), 200);
-    } else {
-      setShowLoading(false);
-    }
-    return () => clearTimeout(timeout);
-  }, [isLoading]);
+        return (
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
+                    <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+                        {/* Left side content skeleton */}
+                        <div className="lg:col-span-7">
+                            <div className="text-left">
+                                <div className="h-12 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
+                                <div className="h-12 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-6"></div>
+                                <div className="h-6 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
+                                <div className="h-6 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-8"></div>
+                                
+                                {/* Button skeleton */}
+                                <div className="h-12 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-8"></div>
 
-  const getStartedButton = useMemo(() => {
-    if (user) {
-      return (
-        <a
-          href="/personal-details"
-          className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
-        >
-          Get Started Free
-          <ArrowRight className="ml-2 h-5 w-5" />
-        </a>
-      );
-    } else {
-      return (
-        <a
-          href="/login"
-          className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
-        >
-          Get Started Free
-          <ArrowRight className="ml-2 h-5 w-5" />
-        </a>
-      );
-    }
-  }, [user]);
+                                {/* Features skeleton */}
+                                <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:mt-10">
+                                    {[1, 2, 3].map((i) => (
+                                        <div key={i} className="flex items-center">
+                                            <div className="h-6 w-6 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                                            <div className="ml-3 h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
 
-  if (isLoading && showLoading) {
+                        {/* Right side skeleton */}
+                        <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-span-5">
+                            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+                                <div className="bg-gray-800 dark:bg-gray-900 px-5 py-4">
+                                    <div className="h-4 w-48 bg-gray-700 dark:bg-gray-600 rounded animate-pulse"></div>
+                                </div>
+                                <div className="p-6">
+                                    <div className="space-y-4">
+                                        <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                                        <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                                        <div className="flex justify-between items-center pt-2">
+                                            <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                            <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-          <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-            <div className="lg:col-span-7">
-              <div className="text-left space-y-6">
-                <div className="h-12 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                <div className="h-6 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                <div className="h-12 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-              </div>
-            </div>
-            <div className="mt-12 lg:mt-0 lg:col-span-5">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl h-96 animate-pulse"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
@@ -79,7 +125,13 @@ const HeroSection = () => {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
-                {getStartedButton}
+                <button
+                  onClick={handleGetStarted}
+                  className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
+                >
+                  {!user ? 'Get Started Free' : !hasProfile ? 'Complete Profile' : 'Generate Message'}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </button>
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:mt-10">
@@ -148,7 +200,8 @@ const HeroSection = () => {
         </div>
       </div>
     </div>
-  );
+    );
+
 };
 
 export default HeroSection;
