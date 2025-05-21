@@ -1,63 +1,80 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ArrowRight, MessageSquare, Sparkles, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { createClient } from "utils/supabase/client";
 
 const HeroSection = () => {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState(null);
-    const [hasProfile, setHasProfile] = useState(false);
-    const supabase = createClient();
+    const supabase = useMemo(() => createClient(), []);
+    
+    // Combine related states into a single state object
+    const [state, setState] = useState({
+        isLoading: true,
+        user: null,
+        hasProfile: false
+    });
+
+    // Memoize the checkUserAndProfile function
+    const checkUserAndProfile = useCallback(async () => {
+        try {
+            const [{ data: { user } }, { data: userDetails }] = await Promise.all([
+                supabase.auth.getUser(),
+                supabase
+                    .from('user_details')
+                    .select('user_id')
+                    .limit(1)
+            ]);
+
+            setState({
+                isLoading: false,
+                user,
+                hasProfile: !!userDetails?.length
+            });
+        } catch (error) {
+            console.error('Error checking user status:', error);
+            setState({
+                isLoading: false,
+                user: null,
+                hasProfile: false
+            });
+        }
+    }, [supabase]);
 
     useEffect(() => {
-        const checkUserAndProfile = async () => {
-            try {
-                // Check if user is logged in
-                const { data: { user }, error: userError } = await supabase.auth.getUser();
-                
-                if (userError || !user) {
-                    setUser(null);
-                    setHasProfile(false);
-                    setIsLoading(false);
-                    return;
-                }
-
-                setUser(user);
-
-                // Check if user has completed profile
-                const { data: userDetails, error: detailsError } = await supabase
-                    .from('user_details')
-                    .select('*')
-                    .eq('user_id', user.id)
-                    .single();
-
-                setHasProfile(!!userDetails && !detailsError);
-                setIsLoading(false);
-            } catch (error) {
-                console.error('Error checking user status:', error);
-                setUser(null);
-                setHasProfile(false);
-                setIsLoading(false);
-            }
-        };
-
         checkUserAndProfile();
-    }, []);
 
-    const handleGetStarted = () => {
-        if (!user) {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+            (event) => {
+                if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+                    checkUserAndProfile();
+                }
+            }
+        );
+
+        return () => subscription?.unsubscribe();
+    }, [checkUserAndProfile, supabase.auth]);
+
+    // Memoize the handleGetStarted function
+    const handleGetStarted = useCallback(() => {
+        if (!state.user) {
             router.push('/login');
-        } else if (!hasProfile) {
+        } else if (!state.hasProfile) {
             router.push('/personal-details');
         } else {
             router.push('/generate-dm');
         }
-    };
+    }, [router, state.user, state.hasProfile]);
 
-    if (isLoading) {
+    // Memoize the features array
+    const features = useMemo(() => [
+        { icon: Zap, text: 'Generate in seconds' },
+        { icon: Sparkles, text: 'AI personalization' },
+        { icon: MessageSquare, text: 'Multi-platform ready' }
+    ], []);
+
+    if (state.isLoading) {
         return (
             <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
@@ -129,7 +146,7 @@ const HeroSection = () => {
                   onClick={handleGetStarted}
                   className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
                 >
-                  {!user ? 'Get Started Free' : !hasProfile ? 'Complete Profile' : 'Generate Message'}
+                  {!state.user ? 'Get Started Free' : !state.hasProfile ? 'Complete Profile' : 'Generate Message'}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
               </div>
@@ -201,7 +218,6 @@ const HeroSection = () => {
       </div>
     </div>
     );
-
 };
 
-export default HeroSection;
+export default React.memo(HeroSection);

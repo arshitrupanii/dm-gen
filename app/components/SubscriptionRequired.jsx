@@ -26,7 +26,6 @@ const SubscriptionRequired = ({ message, usage, onClose }) => {
         '100 messages per Day',
         'Priority customer support',
         'Faster response time',
-        'Advanced analytics'
       ],
       popular: true,
     },
@@ -36,9 +35,8 @@ const SubscriptionRequired = ({ message, usage, onClose }) => {
       description: 'For large organizations with custom needs',
       features: [
         '300 messages per Day',
-        'Dedicated support manager',
+        'Dedicated customer support',
         'Fastest response time',
-        'Advanced analytics',
         'Custom integrations'
       ],
     },
@@ -46,7 +44,7 @@ const SubscriptionRequired = ({ message, usage, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <div className="p-6 lg:p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -55,7 +53,7 @@ const SubscriptionRequired = ({ message, usage, onClose }) => {
                 <Lock className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Upgrade Required
+              Select a plan that's right for you
               </h2>
             </div>
             {onClose && (

@@ -51,42 +51,33 @@ const testimonials = [
 const plans = [
   {
     name: 'Starter',
-    price: '29',
+    price: '5',
     description: 'Perfect for small businesses and individuals',
     features: [
-      '500 messages per month',
-      'Basic AI generation',
-      'LinkedIn & Twitter support',
-      'Basic analytics',
-      'Email support'
+      '20 messages per Day',
+      'Basic customer support',
+      'Standard response time'
     ],
   },
   {
     name: 'Professional',
-    price: '79',
+    price: '10',
     description: 'Ideal for growing teams and businesses',
     features: [
-      '2000 messages per month',
-      'Advanced AI generation',
-      'All platforms support',
-      'Advanced analytics',
-      'Priority support',
-      'Custom templates'
+      '100 messages per Day',
+      'Priority customer support',
+      'Faster response time',
     ],
     popular: true,
   },
   {
     name: 'Enterprise',
-    price: '199',
+    price: '20',
     description: 'For large organizations with custom needs',
     features: [
-      'Unlimited messages',
-      'Premium AI generation',
-      'All platforms support',
-      'Custom analytics',
-      '24/7 dedicated support',
-      'Custom templates',
-      'API access',
+      '300 messages per Day',
+      'Dedicated customer support',
+      'Fastest response time',
       'Custom integrations'
     ],
   },

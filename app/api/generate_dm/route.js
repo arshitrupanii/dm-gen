@@ -89,11 +89,12 @@ export async function POST(request) {
       .update({ 
         freetiertimes: newUsageCount,
         // Set freetierusage to false only when reaching the limit
-        freetierusage: isLastFreeMessage ? false : profile.freetierusage
+        freetierusage: isLastFreeMessage ? 0 : profile.freetierusage
       })
       .eq('id', user.id);
 
     if (incrementError) {
+      console.log(incrementError);
       return Response.json({ error: 'Failed to update usage count' }, { status: 500 });
     }
 
