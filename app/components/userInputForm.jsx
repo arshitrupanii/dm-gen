@@ -3,6 +3,8 @@ import { Mail, MessageSquare, Twitter, MessageCircle, Send, Building2, User, Fil
 import { useState, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SubscriptionRequired from "./SubscriptionRequired";
+
 function CustomDropdown({ options, value, onChange, icon: Icon }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,6 +53,8 @@ export default function MessageForm({ onMessageGenerated }) {
   const [tone, setTone] = useState("professional");
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState(null);
+  const [showSubscription, setShowSubscription] = useState(false);
+  const [subscriptionMessage, setSubscriptionMessage] = useState('');
 
   // Add refs for the textarea fields
   const purposeRef = useRef(null);
@@ -59,19 +63,21 @@ export default function MessageForm({ onMessageGenerated }) {
 
   const handleGenerate = async (e) => {
     e.preventDefault();
+    setIsGenerating(true);
+    setError(null);
+    setShowSubscription(false);
 
     if(!recipientRef.current.value){
       toast.error("Enter Recipient Details");
+      setIsGenerating(false);
       return;
     }
     
     if(!purposeRef.current.value){
       toast.error("Enter Message Purpose");
+      setIsGenerating(false);
       return;
     }
-
-    setIsGenerating(true);
-    setError(null);
 
     try {
       const response = await fetch('/api/generate_dm', {
@@ -89,16 +95,24 @@ export default function MessageForm({ onMessageGenerated }) {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to generate message');
+        if (data.subscriptionRequired) {
+          setSubscriptionMessage(data.message);
+          setShowSubscription(true);
+        } else {
+          throw new Error(data.error || 'Failed to generate message');
+        }
+        return;
       }
 
-      const data = await response.json();
       if (onMessageGenerated) {
-        onMessageGenerated(data.message);
+        onMessageGenerated(data.message, data.usage);
       }
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     } finally {
       setIsGenerating(false);
     }
@@ -225,11 +239,15 @@ export default function MessageForm({ onMessageGenerated }) {
           <span>{isGenerating ? 'Generating...' : 'Generate AI Message'}</span>
         </button>
       </form>
-      <ToastContainer 
-        position="top-right" 
-        autoClose={3000}
-        theme="dark"
-      />
+
+      {showSubscription && (
+        <SubscriptionRequired
+          message={subscriptionMessage}
+          onClose={() => setShowSubscription(false)}
+        />
+      )}
+
+      <ToastContainer position="top-right" autoClose={3000} theme="dark" />
     </div>
   );
 }

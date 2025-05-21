@@ -13,15 +13,88 @@ export async function POST(request) {
       return Response.json({ error: 'Unauthorized - Please sign in' }, { status: 401 });
     }
 
-    // Fetch user details from the user_details table
-    const { data: userDetails, error: detailsError } = await supabase
-      .from('user_details')
-      .select('fullName, jobTitle, companyName, experienceLevel')
-      .eq('user_id', user.id)
-      .single();
+    // Fetch user details and profile info
+    const [userDetailsResult, profileResult] = await Promise.all([
+      supabase
+        .from('user_details')
+        .select('fullName, jobTitle, companyName, experienceLevel')
+        .eq('user_id', user.id)
+        .single(),
+      supabase
+        .from('profiles')
+        .select('freetierusage, freetiertimes')
+        .eq('id', user.id)
+        .single()
+    ]);
 
-    if (detailsError) {
+    // Handle user details error
+    if (userDetailsResult.error) {
       return Response.json({ error: 'Failed to fetch user details' }, { status: 500 });
+    }
+
+    // Handle profile error
+    if (profileResult.error) {
+      return Response.json({ error: 'Failed to fetch profile information' }, { status: 500 });
+    }
+
+    const userDetails = userDetailsResult.data;
+    const profile = profileResult.data;
+    const currentUsage = profile.freetiertimes || 0;
+
+    // Check if user has already reached the free tier limit (5 messages)
+    if (currentUsage >= 5) {
+      // Update freetierusage to false when limit is reached
+      await supabase
+        .from('profiles')
+        .update({ 
+          freetierusage: false,
+          freetiertimes: 5 // Ensure it doesn't exceed 5
+        })
+        .eq('id', user.id);
+
+      return Response.json({ 
+        error: 'Free tier limit reached',
+        subscriptionRequired: true,
+        message: 'You have used all 5 free messages. Upgrade to a subscription plan to continue generating unlimited messages.',
+        usage: {
+          current: 5,
+          remaining: 0,
+          isFreeTier: true,
+          limitReached: true
+        }
+      }, { status: 403 });
+    }
+
+    // Calculate new usage count
+    const newUsageCount = currentUsage + 1;
+    const isLastFreeMessage = newUsageCount === 5;
+
+    // Allow message generation if freetiertimes is less than 5 and freetierusage is false
+    if (profile.freetierusage) {
+      return Response.json({ 
+        error: 'Subscription required',
+        subscriptionRequired: true,
+        message: 'Please upgrade to a subscription plan to continue generating messages.',
+        usage: {
+          current: currentUsage,
+          remaining: 5 - currentUsage,
+          isFreeTier: true
+        }
+      }, { status: 403 });
+    }
+
+    // Increment freetiertimes and update freetierusage if this is the last message
+    const { error: incrementError } = await supabase
+      .from('profiles')
+      .update({ 
+        freetiertimes: newUsageCount,
+        // Set freetierusage to false only when reaching the limit
+        freetierusage: isLastFreeMessage ? false : profile.freetierusage
+      })
+      .eq('id', user.id);
+
+    if (incrementError) {
+      return Response.json({ error: 'Failed to update usage count' }, { status: 500 });
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -80,8 +153,17 @@ export async function POST(request) {
     const response = await result.response;
     const text = response.text();
 
-    return Response.json({ message: text });
+    return Response.json({ 
+      message: text,
+      usage: {
+        current: newUsageCount,
+        remaining: 5 - newUsageCount,
+        isFreeTier: true,
+        limitReached: isLastFreeMessage
+      }
+    });
   } catch (error) {
+    console.error('Generation error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
