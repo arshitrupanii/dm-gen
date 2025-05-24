@@ -9,61 +9,91 @@ const HeroSection = () => {
     const router = useRouter();
     const supabase = useMemo(() => createClient(), []);
     
-    // Combine related states into a single state object
     const [state, setState] = useState({
         isLoading: true,
+        isNavigating: false,
         user: null,
         hasProfile: false
     });
 
-    // Memoize the checkUserAndProfile function
+    // Prefetch all possible routes
+    useEffect(() => {
+        router.prefetch('/login');
+        router.prefetch('/personal-details');
+        router.prefetch('/generate-dm');
+    }, [router]);
+
     const checkUserAndProfile = useCallback(async () => {
         try {
+            // Optimize query by selecting only necessary fields
             const [{ data: { user } }, { data: userDetails }] = await Promise.all([
                 supabase.auth.getUser(),
                 supabase
                     .from('user_details')
                     .select('user_id')
                     .limit(1)
+                    .single()
             ]);
 
-            setState({
+            setState(prev => ({
+                ...prev,
                 isLoading: false,
                 user,
-                hasProfile: !!userDetails?.length
-            });
+                hasProfile: !!userDetails
+            }));
         } catch (error) {
             console.error('Error checking user status:', error);
-            setState({
+            setState(prev => ({
+                ...prev,
                 isLoading: false,
                 user: null,
                 hasProfile: false
-            });
+            }));
         }
     }, [supabase]);
 
     useEffect(() => {
-        checkUserAndProfile();
+        let mounted = true;
+
+        const initializeAuth = async () => {
+            try {
+                await checkUserAndProfile();
+            } finally {
+                if (mounted) {
+                    setState(prev => ({ ...prev, isLoading: false }));
+                }
+            }
+        };
+
+        initializeAuth();
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            (event) => {
+            async (event) => {
                 if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-                    checkUserAndProfile();
+                    await checkUserAndProfile();
                 }
             }
         );
 
-        return () => subscription?.unsubscribe();
+        return () => {
+            mounted = false;
+            subscription?.unsubscribe();
+        };
     }, [checkUserAndProfile, supabase.auth]);
 
-    // Memoize the handleGetStarted function
-    const handleGetStarted = useCallback(() => {
-        if (!state.user) {
-            router.push('/login');
-        } else if (!state.hasProfile) {
-            router.push('/personal-details');
-        } else {
-            router.push('/generate-dm');
+    const handleGetStarted = useCallback(async () => {
+        setState(prev => ({ ...prev, isNavigating: true }));
+        
+        const route = !state.user 
+            ? '/login' 
+            : !state.hasProfile 
+                ? '/personal-details' 
+                : '/generate-dm';
+
+        try {
+            await router.push(route);
+        } finally {
+            setState(prev => ({ ...prev, isNavigating: false }));
         }
     }, [router, state.user, state.hasProfile]);
 
@@ -144,10 +174,24 @@ const HeroSection = () => {
               <div className="mt-8 flex flex-wrap gap-4">
                 <button
                   onClick={handleGetStarted}
-                  className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg"
+                  disabled={state.isNavigating}
+                  className={`inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg ${
+                      state.isNavigating 
+                          ? 'opacity-75 cursor-not-allowed' 
+                          : 'hover:bg-blue-700 dark:hover:bg-blue-600'
+                  }`}
                 >
-                  {!state.user ? 'Get Started Free' : !state.hasProfile ? 'Complete Profile' : 'Generate Message'}
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  {state.isNavigating ? (
+                      <>
+                          <span className="animate-pulse">Loading...</span>
+                          <ArrowRight className="ml-2 h-5 w-5 animate-pulse" />
+                      </>
+                  ) : (
+                      <>
+                          {!state.user ? 'Get Started Free' : !state.hasProfile ? 'Complete Profile' : 'Generate Message'}
+                          <ArrowRight className="ml-2 h-5 w-5" />
+                      </>
+                  )}
                 </button>
               </div>
 
