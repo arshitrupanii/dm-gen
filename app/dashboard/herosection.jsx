@@ -1,162 +1,53 @@
 'use client';
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, MessageSquare, Sparkles, Zap } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { createClient } from "utils/supabase/client";
 
 const HeroSection = () => {
-    const router = useRouter();
-    const supabase = useMemo(() => createClient(), []);
-    
-    const [state, setState] = useState({
-        isLoading: true,
-        isNavigating: false,
-        user: null,
-        hasProfile: false
+  const router = useRouter();
+  const supabase = createClient();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setUser(session?.user || null);
+      } catch (error) {
+        console.error('Error fetching session:', error);
+        setUser(null);
+      }
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user || null);
     });
 
-    // Prefetch all possible routes
-    useEffect(() => {
-        router.prefetch('/login');
-        router.prefetch('/personal-details');
-        router.prefetch('/generate-dm');
-    }, [router]);
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [supabase.auth]);
 
-    const checkUserAndProfile = useCallback(async () => {
-        try {
-            // Optimize query by selecting only necessary fields
-            const [{ data: { user } }, { data: userDetails }] = await Promise.all([
-                supabase.auth.getUser(),
-                supabase
-                    .from('user_details')
-                    .select('user_id')
-                    .limit(1)
-                    .single()
-            ]);
-
-            setState(prev => ({
-                ...prev,
-                isLoading: false,
-                user,
-                hasProfile: !!userDetails
-            }));
-        } catch (error) {
-            console.error('Error checking user status:', error);
-            setState(prev => ({
-                ...prev,
-                isLoading: false,
-                user: null,
-                hasProfile: false
-            }));
-        }
-    }, [supabase]);
-
-    useEffect(() => {
-        let mounted = true;
-
-        const initializeAuth = async () => {
-            try {
-                await checkUserAndProfile();
-            } finally {
-                if (mounted) {
-                    setState(prev => ({ ...prev, isLoading: false }));
-                }
-            }
-        };
-
-        initializeAuth();
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (event) => {
-                if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-                    await checkUserAndProfile();
-                }
-            }
-        );
-
-        return () => {
-            mounted = false;
-            subscription?.unsubscribe();
-        };
-    }, [checkUserAndProfile, supabase.auth]);
-
-    const handleGetStarted = useCallback(async () => {
-        setState(prev => ({ ...prev, isNavigating: true }));
-        
-        const route = !state.user 
-            ? '/login' 
-            : !state.hasProfile 
-                ? '/personal-details' 
-                : '/generate-dm';
-
-        try {
-            await router.push(route);
-        } finally {
-            setState(prev => ({ ...prev, isNavigating: false }));
-        }
-    }, [router, state.user, state.hasProfile]);
-
-    // Memoize the features array
-    const features = useMemo(() => [
-        { icon: Zap, text: 'Generate in seconds' },
-        { icon: Sparkles, text: 'AI personalization' },
-        { icon: MessageSquare, text: 'Multi-platform ready' }
-    ], []);
-
-    if (state.isLoading) {
-        return (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-                    <div className="lg:grid lg:grid-cols-12 lg:gap-8">
-                        {/* Left side content skeleton */}
-                        <div className="lg:col-span-7">
-                            <div className="text-left">
-                                <div className="h-12 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
-                                <div className="h-12 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-6"></div>
-                                <div className="h-6 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4"></div>
-                                <div className="h-6 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-8"></div>
-                                
-                                {/* Button skeleton */}
-                                <div className="h-12 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-8"></div>
-
-                                {/* Features skeleton */}
-                                <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:mt-10">
-                                    {[1, 2, 3].map((i) => (
-                                        <div key={i} className="flex items-center">
-                                            <div className="h-6 w-6 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
-                                            <div className="ml-3 h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right side skeleton */}
-                        <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-span-5">
-                            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-                                <div className="bg-gray-800 dark:bg-gray-900 px-5 py-4">
-                                    <div className="h-4 w-48 bg-gray-700 dark:bg-gray-600 rounded animate-pulse"></div>
-                                </div>
-                                <div className="p-6">
-                                    <div className="space-y-4">
-                                        <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-                                        <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-                                        <div className="flex justify-between items-center pt-2">
-                                            <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                                            <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+  const handleGetStarted = () => {
+    if (user) {
+      router.push('/dashboard');
+    } else {
+      router.push('/login');
     }
+  };
 
-    return (
+  const features = [
+    { icon: Zap, text: 'Generate in seconds' },
+    { icon: Sparkles, text: 'AI personalization' },
+    { icon: MessageSquare, text: 'Multi-platform ready' }
+  ];
+
+  return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
@@ -174,51 +65,28 @@ const HeroSection = () => {
               <div className="mt-8 flex flex-wrap gap-4">
                 <button
                   onClick={handleGetStarted}
-                  disabled={state.isNavigating}
-                  className={`inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg ${
-                      state.isNavigating 
-                          ? 'opacity-75 cursor-not-allowed' 
-                          : 'hover:bg-blue-700 dark:hover:bg-blue-600'
-                  }`}
+                  className={`inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-md shadow-md transition duration-300 ease-in-out sm:px-10 sm:py-4 sm:text-lg`}
                 >
-                  {state.isNavigating ? (
-                      <>
-                          <span className="animate-pulse">Loading...</span>
-                          <ArrowRight className="ml-2 h-5 w-5 animate-pulse" />
-                      </>
-                  ) : (
-                      <>
-                          {!state.user ? 'Get Started Free' : !state.hasProfile ? 'Complete Profile' : 'Generate Message'}
-                          <ArrowRight className="ml-2 h-5 w-5" />
-                      </>
-                  )}
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:mt-10">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <Zap className="h-6 w-6 text-blue-500 dark:text-blue-400" />
-                  </div>
-                  <p className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">Generate in seconds</p>
-                </div>
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <Sparkles className="h-6 w-6 text-blue-500 dark:text-blue-400" />
-                  </div>
-                  <p className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">AI personalization</p>
-                </div>
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <MessageSquare className="h-6 w-6 text-blue-500 dark:text-blue-400" />
-                  </div>
-                  <p className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">Multi-platform ready</p>
-                </div>
+                {features.map((feature, index) => {
+                  const Icon = feature.icon;
+                  return (
+                    <div key={index} className="flex items-center">
+                      <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                      <span className="ml-3 text-gray-600 dark:text-gray-300">{feature.text}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
 
-          {/* Right side image/demo */}
+          {/* Right side preview */}
           <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-span-5">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
               <div className="bg-gray-800 dark:bg-gray-900 px-5 py-4 flex items-center">
@@ -261,7 +129,7 @@ const HeroSection = () => {
         </div>
       </div>
     </div>
-    );
+  );
 };
 
-export default React.memo(HeroSection);
+export default HeroSection;
